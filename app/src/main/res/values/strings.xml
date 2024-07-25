@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Ritmo</string>
+    <string name="login_title">Welcome back! Glad to see you, Again!</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+</resources>
