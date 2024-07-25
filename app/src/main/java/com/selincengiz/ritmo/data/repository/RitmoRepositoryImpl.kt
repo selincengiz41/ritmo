@@ -14,7 +14,7 @@ class RitmoRepositoryImpl(
         return api.search(q).data?.map { it?.toTrackUI() }
     }
 
-    override suspend fun getAlbum(id: Int): AlbumUI {
+    override suspend fun getAlbum(id: String): AlbumUI {
         return api.getAlbum(id).toAlbumUI()
     }
 

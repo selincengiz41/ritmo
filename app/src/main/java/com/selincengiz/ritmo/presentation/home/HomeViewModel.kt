@@ -20,7 +20,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val discover = ritmoUseCase.search("a")
             _state.value = state.value.copy(
-                discover = discover,
+                discover = discover?.map { it?.album },
                 track = discover?.get(7),
                 artist = listOf(discover?.get(7)?.artist, discover?.get(6)?.artist)
             )

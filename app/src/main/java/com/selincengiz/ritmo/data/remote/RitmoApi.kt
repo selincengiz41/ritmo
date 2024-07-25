@@ -19,7 +19,7 @@ interface RitmoApi {
 
     @GET(ALBUM)
     suspend fun getAlbum(
-        @Path("id") id: Int,
+        @Path("id") id: String,
     ): AlbumResponse
 
     @GET(TRACK)

@@ -1,5 +1,6 @@
 package com.selincengiz.ritmo.presentation.navigator
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -17,6 +18,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.selincengiz.ritmo.R
+import com.selincengiz.ritmo.presentation.detail.DetailScreen
+import com.selincengiz.ritmo.presentation.detail.DetailViewModel
+import com.selincengiz.ritmo.presentation.detail.DetailsEvent
 import com.selincengiz.ritmo.presentation.favorite.FavoriteScreen
 import com.selincengiz.ritmo.presentation.home.HomeScreen
 import com.selincengiz.ritmo.presentation.home.HomeViewModel
@@ -98,36 +102,40 @@ fun RitmoNavigator() {
             composable(route = Route.HomeScreen.route) {
                 val viewModel: HomeViewModel = hiltViewModel()
                 HomeScreen(
-                     state = viewModel.state.value,
+                    state = viewModel.state.value,
+                    navigateToDetail = { id ->
+                        navigateToDetail(
+                            navController = navController,
+                            id = id
+                        )
+                    }
                 )
             }
 
 
             composable(route = Route.SearchScreen.route) {
-                  val viewModel: SearchViewModel = hiltViewModel()
-                  val state = viewModel.state.value
+                val viewModel: SearchViewModel = hiltViewModel()
+                val state = viewModel.state.value
                 SearchScreen(
                     state = state,
-                     event = viewModel::onEvent
+                    event = viewModel::onEvent
                 )
             }
-            /*
-                        composable(route = Route.DetailScreen.route) {
-                            val viewModel: DetailViewModel = hiltViewModel()
-                            if (viewModel.sideEffect != null) {
-                                Toast.makeText(LocalContext.current, viewModel.sideEffect, Toast.LENGTH_SHORT)
-                                    .show()
-                                viewModel.onEvent(DetailsEvent.RemoveSideEffect)
-                            }
-                            navController.previousBackStackEntry?.savedStateHandle?.get<Article?>("article")
-                                ?.let { article ->
-                                    DetailScreen(
-                                        article = article,
-                                        event = viewModel::onEvent,
-                                        navigateUp = { navController.navigateUp() })
-                                }
-                        }
-*/
+
+            composable(route = Route.DetailScreen.route) {
+                val viewModel: DetailViewModel = hiltViewModel()
+                navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
+                    ?.let { id ->
+                        Log.i("idsd",id)
+                        viewModel.onEvent(DetailsEvent.GetAlbum(id))
+                        Log.i("detail", viewModel.state.value.album?.title?:"")
+                        DetailScreen(
+                            state = viewModel.state.value,
+                            event = viewModel::onEvent,
+                        )
+                    }
+            }
+
             composable(route = Route.FavoriteScreen.route) {
                 //  val viewModel: BookmarkViewModel = hiltViewModel()
                 //  val state = viewModel.state.value
@@ -152,9 +160,9 @@ private fun navigateToTap(navController: NavController, route: String) {
         }
     }
 }
-/*
-private fun navigateToDetail(navController: NavController, article: Article) {
-    navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
+
+private fun navigateToDetail(navController: NavController, id: String) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("id", id)
     navController.navigate(route = Route.DetailScreen.route) {
     }
-}*/
+}

@@ -1,6 +1,5 @@
 package com.selincengiz.ritmo.presentation.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,11 +18,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +31,7 @@ import com.selincengiz.ritmo.presentation.home.components.ArtistCard
 import com.selincengiz.ritmo.presentation.home.components.Release
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, state: HomeState) {
+fun HomeScreen(modifier: Modifier = Modifier, state: HomeState, navigateToDetail: (String) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -87,9 +83,9 @@ fun HomeScreen(modifier: Modifier = Modifier, state: HomeState) {
                 ) {
                     items(count = state.discover?.size ?: 0) {
                         state.discover?.get(it)?.let { album ->
-                            AlbumCard(albumUI = album.album ?: return@items) {
-
-                            }
+                            AlbumCard(
+                                albumUI = album,
+                                onClick = { navigateToDetail(album.id?:"") })
                         }
                     }
                 }
@@ -143,5 +139,7 @@ fun HomeScreen(modifier: Modifier = Modifier, state: HomeState) {
 @Preview
 @Composable
 private fun HomePrev() {
-    HomeScreen(state = HomeState())
+    HomeScreen(state = HomeState()){
+
+    }
 }

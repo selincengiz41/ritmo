@@ -6,7 +6,7 @@ import com.selincengiz.ritmo.domain.repository.RitmoRepository
 class GetAlbum(
     private val ritmoRepository: RitmoRepository
 ) {
-    suspend operator fun invoke(id: Int): AlbumUI {
+    suspend operator fun invoke(id: String): AlbumUI {
         return ritmoRepository.getAlbum(id)
     }
 }

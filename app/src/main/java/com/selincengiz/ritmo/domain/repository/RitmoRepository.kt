@@ -10,7 +10,7 @@ interface RitmoRepository {
     ): List<TrackUI?>?
 
     suspend fun getAlbum(
-        id: Int,
+        id: String,
     ): AlbumUI
 
     suspend fun getTrack(

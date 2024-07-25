@@ -25,13 +25,28 @@ class SearchViewModel @Inject constructor(
             is SearchEvent.SearchRitmo -> {
                 searchRitmo()
             }
+
+            is SearchEvent.Filter -> {
+                _state.value = state.value.copy(selected = event.selected)
+            }
         }
     }
 
     private fun searchRitmo() {
         viewModelScope.launch {
             val ritmo = ritmoUseCase.search(
-                q = state.value.searchQuery
+                q = when (state.value.selected) {
+                    0 -> state.value.searchQuery
+                    1 -> "track:\"${state.value.searchQuery}\""
+                    2 -> "album:\"${state.value.searchQuery}\""
+                    3 -> "artist:\"${state.value.searchQuery}\""
+                    else -> ""
+                }
+            )
+            _state.value = state.value.copy(
+                searchHistory = state.value.searchHistory.apply {
+                    add(state.value.searchQuery)
+                }.take(15).distinct().toMutableList()
             )
             _state.value = state.value.copy(ritmo = ritmo)
         }

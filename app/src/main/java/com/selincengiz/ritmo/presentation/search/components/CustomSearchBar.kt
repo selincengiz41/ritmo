@@ -1,4 +1,4 @@
-package com.selincengiz.ritmo.presentation.common
+package com.selincengiz.ritmo.presentation.search.components
 
 
 import android.graphics.Paint
