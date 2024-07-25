@@ -83,7 +83,8 @@ private fun NewsBottomNavigationPreview() {
             items = listOf(
                 BottomNavigationItem(icon = R.drawable.ic_home, text = "Home"),
                 BottomNavigationItem(icon = R.drawable.ic_search, "Search"),
-                BottomNavigationItem(icon = R.drawable.ic_favorite, "Favorite")
+                BottomNavigationItem(icon = R.drawable.ic_favorite, "Favorite"),
+                BottomNavigationItem(icon = R.drawable.ic_profile, "Profile")
             ),
             selected = 0,
             onItemClick = {}

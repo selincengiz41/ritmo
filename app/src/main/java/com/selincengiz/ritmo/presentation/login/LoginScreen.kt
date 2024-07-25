@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.presentation.common.GlowingCard
 import com.selincengiz.ritmo.ui.theme.BlueButtonColor
@@ -52,7 +54,7 @@ fun LoginScreen(loginState: LoginState, event: (LoginEvent) -> Unit, navigateToH
             }
 
             is LoginState.Success -> {
-                snackbarHostState.showSnackbar("Success")
+                snackbarHostState.showSnackbar("Success", duration = SnackbarDuration.Short)
                 navigateToHome()
             }
 
@@ -93,7 +95,8 @@ fun LoginScreen(loginState: LoginState, event: (LoginEvent) -> Unit, navigateToH
                 label = {
                     Text(
                         stringResource(id = R.string.email),
-                        color = colorResource(id = R.color.white)
+                        color = colorResource(id = R.color.white),
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
                     )
                 }, modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -110,7 +113,9 @@ fun LoginScreen(loginState: LoginState, event: (LoginEvent) -> Unit, navigateToH
                 label = {
                     Text(
                         stringResource(id = R.string.password),
-                        color = colorResource(id = R.color.white)
+                        color = colorResource(id = R.color.white),
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
+
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),

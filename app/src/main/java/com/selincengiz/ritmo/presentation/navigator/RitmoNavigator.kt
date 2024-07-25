@@ -1,6 +1,5 @@
 package com.selincengiz.ritmo.presentation.navigator
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -27,17 +26,20 @@ import com.selincengiz.ritmo.presentation.home.HomeViewModel
 import com.selincengiz.ritmo.presentation.main.components.Route
 import com.selincengiz.ritmo.presentation.navigator.components.BottomNavigation
 import com.selincengiz.ritmo.presentation.navigator.components.BottomNavigationItem
+import com.selincengiz.ritmo.presentation.profile.ProfileScreen
+import com.selincengiz.ritmo.presentation.profile.ProfileViewModel
 import com.selincengiz.ritmo.presentation.search.SearchScreen
 import com.selincengiz.ritmo.presentation.search.SearchViewModel
 
 
 @Composable
-fun RitmoNavigator() {
+fun RitmoNavigator(navigateToLogin: () -> Unit) {
     val bottomNavigationItems = remember {
         listOf(
             BottomNavigationItem(icon = R.drawable.ic_home, text = "Home"),
             BottomNavigationItem(icon = R.drawable.ic_search, "Search"),
-            BottomNavigationItem(icon = R.drawable.ic_favorite, "Favorite")
+            BottomNavigationItem(icon = R.drawable.ic_favorite, "Favorite"),
+            BottomNavigationItem(icon = R.drawable.ic_profile, "Profile")
         )
     }
 
@@ -51,6 +53,7 @@ fun RitmoNavigator() {
             Route.HomeScreen.route -> 0
             Route.SearchScreen.route -> 1
             Route.FavoriteScreen.route -> 2
+            Route.ProfileScreen.route -> 3
             else -> 0
 
         }
@@ -58,7 +61,8 @@ fun RitmoNavigator() {
     val isBottomBarVisible = remember(key1 = backstackState) {
         backstackState?.destination?.route == Route.HomeScreen.route ||
                 backstackState?.destination?.route == Route.SearchScreen.route ||
-                backstackState?.destination?.route == Route.FavoriteScreen.route
+                backstackState?.destination?.route == Route.FavoriteScreen.route ||
+                backstackState?.destination?.route == Route.ProfileScreen.route
     }
 
     Scaffold(
@@ -84,6 +88,11 @@ fun RitmoNavigator() {
                             2 -> navigateToTap(
                                 navController = navController,
                                 route = Route.FavoriteScreen.route
+                            )
+
+                            3 -> navigateToTap(
+                                navController = navController,
+                                route = Route.ProfileScreen.route
                             )
                         }
                     }
@@ -126,9 +135,7 @@ fun RitmoNavigator() {
                 val viewModel: DetailViewModel = hiltViewModel()
                 navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
                     ?.let { id ->
-                        Log.i("idsd",id)
                         viewModel.onEvent(DetailsEvent.GetAlbum(id))
-                        Log.i("detail", viewModel.state.value.album?.title?:"")
                         DetailScreen(
                             state = viewModel.state.value,
                             event = viewModel::onEvent,
@@ -143,6 +150,15 @@ fun RitmoNavigator() {
                     /* state = state, navigateToDetail = {
                      navigateToDetail(navController = navController, article = it)
                  }*/
+                )
+            }
+
+            composable(route = Route.ProfileScreen.route) {
+                val viewModel: ProfileViewModel = hiltViewModel()
+
+                ProfileScreen(
+                    event = viewModel::onEvent,
+                    navigateToLogin = navigateToLogin
                 )
             }
         }

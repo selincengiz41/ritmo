@@ -38,7 +38,7 @@ fun NavGraph(
             startDestination = Route.RitmoNavigatorScreen.route
         ) {
             composable(route = Route.RitmoNavigatorScreen.route) {
-                RitmoNavigator()
+                RitmoNavigator(navigateToLogin = { mainEvent(MainEvent.Auth) })
             }
         }
 
