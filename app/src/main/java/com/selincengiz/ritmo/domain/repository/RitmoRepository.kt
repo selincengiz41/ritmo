@@ -14,6 +14,6 @@ interface RitmoRepository {
     ): AlbumUI
 
     suspend fun getTrack(
-        id: Int,
+        id: String,
     ): TrackUI
 }

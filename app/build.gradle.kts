@@ -114,4 +114,8 @@ dependencies {
 
     //Chucker
     implementation(libs.library)
+
+    //Exoplayer
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
 }

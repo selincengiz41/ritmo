@@ -18,7 +18,7 @@ class RitmoRepositoryImpl(
         return api.getAlbum(id).toAlbumUI()
     }
 
-    override suspend fun getTrack(id: Int): TrackUI {
+    override suspend fun getTrack(id: String): TrackUI {
         return api.getTrack(id).toTrackUI()
     }
 }

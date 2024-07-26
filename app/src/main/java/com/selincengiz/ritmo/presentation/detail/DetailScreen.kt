@@ -31,68 +31,72 @@ import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.common.ListedRitmo
 
 @Composable
-fun DetailScreen(modifier: Modifier = Modifier, state: DetailState, event: (DetailsEvent) -> Unit) {
+fun DetailScreen(
+    modifier: Modifier = Modifier,
+    state: DetailState,
+    event: (DetailsEvent) -> Unit,
+    navigateToPlayer: (String) -> Unit
+) {
     val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-            AsyncImage(
-                model = ImageRequest.Builder(context).data(state.album?.coverBig).build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.45f)
-                    .drawWithContent {
-                        drawContent()
-                        drawRect(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.7f),
-                                    Color.Black
-                                ),
-                                startY = size.height / 2,
-                                endY = size.height
+        AsyncImage(
+            model = ImageRequest.Builder(context).data(state.album?.coverBig).build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.45f)
+                .drawWithContent {
+                    drawContent()
+                    drawRect(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.7f),
+                                Color.Black
                             ),
-                            size = size
-                        )
-                    },
-            )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = MediumPadding1),
-                text = state.album?.title ?: "",
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = Bold),
-                color = Color.White,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.height(ExtraSmallPadding))
+                            startY = size.height / 2,
+                            endY = size.height
+                        ),
+                        size = size
+                    )
+                },
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MediumPadding1),
+            text = state.album?.title ?: "",
+            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = Bold),
+            color = Color.White,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
-            state.album?.let {
-                LazyColumn(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(start = 15.dp),
-                    verticalArrangement = Arrangement.spacedBy(MediumPadding1),
-                    contentPadding = PaddingValues(all = ExtraSmallPadding2)
-                ) {
-                    items(count = state.album?.tracks?.size ?: 0) {
-                        state.album?.tracks?.get(it)?.let { track ->
-                            ListedRitmo(trackUI = track) {
-                            }
-                        }
+        state.album?.let {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp),
+                verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+                contentPadding = PaddingValues(all = ExtraSmallPadding2)
+            ) {
+                items(count = state.album?.tracks?.size ?: 0) {
+                    state.album?.tracks?.get(it)?.let { track ->
+                        ListedRitmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
                     }
                 }
             }
         }
     }
+}
 
 
 @Preview
 @Composable
 private fun DetailPrev() {
-    DetailScreen(state = DetailState(), event = {})
+    DetailScreen(state = DetailState(), event = {}, navigateToPlayer = {})
 }

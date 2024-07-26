@@ -24,6 +24,6 @@ interface RitmoApi {
 
     @GET(TRACK)
     suspend fun getTrack(
-        @Path("id") id: Int,
+        @Path("id") id: String,
     ): Track
 }

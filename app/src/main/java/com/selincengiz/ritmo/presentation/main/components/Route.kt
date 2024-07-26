@@ -14,4 +14,6 @@ sealed class Route(
     data object LoginScreen : Route(route = "loginScreen")
     data object LoginNavigation : Route(route = "loginNavigation")
     data object ProfileScreen : Route(route = "profileScreen")
+    data object PlayerScreen : Route(route = "playerScreen")
+
 }

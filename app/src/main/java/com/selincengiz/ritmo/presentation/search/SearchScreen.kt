@@ -48,6 +48,7 @@ import com.selincengiz.ritmo.ui.theme.BlueButtonColor
 fun SearchScreen(
     modifier: Modifier = Modifier, state: SearchState,
     event: (SearchEvent) -> Unit,
+    navigateToPlayer: (String) -> Unit
 ) {
     var historyVisibility by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
@@ -129,9 +130,9 @@ fun SearchScreen(
                 ) {
                     items(count = state.ritmo?.size ?: 0) {
                         state.ritmo?.get(it)?.let { track ->
-                            ListedRitmo(trackUI = track) {
-
-                            }
+                            ListedRitmo(
+                                trackUI = track,
+                                onClick = { navigateToPlayer(track.id ?: "") })
                         }
                     }
                 }
@@ -166,5 +167,5 @@ fun SearchScreen(
 @Preview
 @Composable
 private fun SearchPrev() {
-    SearchScreen(state = SearchState(), event = { SearchEvent.SearchRitmo })
+    SearchScreen(state = SearchState(), event = { SearchEvent.SearchRitmo }, navigateToPlayer = {})
 }

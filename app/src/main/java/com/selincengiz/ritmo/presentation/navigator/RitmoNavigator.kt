@@ -1,5 +1,6 @@
 package com.selincengiz.ritmo.presentation.navigator
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -26,6 +27,9 @@ import com.selincengiz.ritmo.presentation.home.HomeViewModel
 import com.selincengiz.ritmo.presentation.main.components.Route
 import com.selincengiz.ritmo.presentation.navigator.components.BottomNavigation
 import com.selincengiz.ritmo.presentation.navigator.components.BottomNavigationItem
+import com.selincengiz.ritmo.presentation.player.PlayerEvent
+import com.selincengiz.ritmo.presentation.player.PlayerScreen
+import com.selincengiz.ritmo.presentation.player.PlayerViewModel
 import com.selincengiz.ritmo.presentation.profile.ProfileScreen
 import com.selincengiz.ritmo.presentation.profile.ProfileViewModel
 import com.selincengiz.ritmo.presentation.search.SearchScreen
@@ -113,9 +117,10 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 HomeScreen(
                     state = viewModel.state.value,
                     navigateToDetail = { id ->
-                        navigateToDetail(
+                        navigateToArgs(
                             navController = navController,
-                            id = id
+                            id = id,
+                            route = Route.DetailScreen.route
                         )
                     }
                 )
@@ -127,7 +132,14 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 val state = viewModel.state.value
                 SearchScreen(
                     state = state,
-                    event = viewModel::onEvent
+                    event = viewModel::onEvent,
+                    navigateToPlayer = { id ->
+                        navigateToArgs(
+                            navController = navController,
+                            id = id,
+                            route = Route.PlayerScreen.route
+                        )
+                    }
                 )
             }
 
@@ -137,6 +149,25 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                     ?.let { id ->
                         viewModel.onEvent(DetailsEvent.GetAlbum(id))
                         DetailScreen(
+                            state = viewModel.state.value,
+                            event = viewModel::onEvent,
+                            navigateToPlayer = { id ->
+                                navigateToArgs(
+                                    navController = navController,
+                                    id = id,
+                                    route = Route.PlayerScreen.route
+                                )
+                            }
+                        )
+                    }
+            }
+
+            composable(route = Route.PlayerScreen.route) {
+                val viewModel: PlayerViewModel = hiltViewModel()
+                navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
+                    ?.let { id ->
+                        viewModel.onEvent(PlayerEvent.GetTrack(id))
+                        PlayerScreen(
                             state = viewModel.state.value,
                             event = viewModel::onEvent,
                         )
@@ -177,8 +208,8 @@ private fun navigateToTap(navController: NavController, route: String) {
     }
 }
 
-private fun navigateToDetail(navController: NavController, id: String) {
+private fun navigateToArgs(navController: NavController, id: String, route: String) {
     navController.currentBackStackEntry?.savedStateHandle?.set("id", id)
-    navController.navigate(route = Route.DetailScreen.route) {
+    navController.navigate(route = route) {
     }
 }

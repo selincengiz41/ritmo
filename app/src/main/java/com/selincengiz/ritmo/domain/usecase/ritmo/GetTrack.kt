@@ -6,7 +6,7 @@ import com.selincengiz.ritmo.domain.repository.RitmoRepository
 class GetTrack(
     private val ritmoRepository: RitmoRepository
 ) {
-    suspend operator fun invoke(id: Int): TrackUI {
+    suspend operator fun invoke(id: String): TrackUI {
         return ritmoRepository.getTrack(id)
     }
 }
