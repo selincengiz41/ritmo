@@ -3,9 +3,11 @@ package com.selincengiz.ritmo.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class Artist(
+data class ContributorDto(
     @SerializedName("id")
-    val id: String?,
+    val id: Int?,
+    @SerializedName("link")
+    val link: String?,
     @SerializedName("name")
     val name: String?,
     @SerializedName("picture")
@@ -18,6 +20,12 @@ data class Artist(
     val pictureSmall: String?,
     @SerializedName("picture_xl")
     val pictureXl: String?,
+    @SerializedName("radio")
+    val radio: Boolean?,
+    @SerializedName("role")
+    val role: String?,
+    @SerializedName("share")
+    val share: String?,
     @SerializedName("tracklist")
     val tracklist: String?,
     @SerializedName("type")

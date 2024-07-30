@@ -3,11 +3,11 @@ package com.selincengiz.ritmo.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class Track(
+data class TrackDto(
     @SerializedName("album")
-    val album: Album?,
+    val trackAlbumDto: TrackAlbumDto?,
     @SerializedName("artist")
-    val artist: Artist?,
+    val artistDto: ArtistDto?,
     @SerializedName("duration")
     val duration: String?,
     @SerializedName("explicit_content_cover")

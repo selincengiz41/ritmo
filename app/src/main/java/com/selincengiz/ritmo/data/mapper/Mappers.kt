@@ -1,10 +1,12 @@
 package com.selincengiz.ritmo.data.mapper
 
-import com.selincengiz.ritmo.data.mapper.Mappers.toTrackUI
-import com.selincengiz.ritmo.data.remote.dto.Album
+import com.selincengiz.ritmo.data.local.entities.ArtistEntity
+import com.selincengiz.ritmo.data.local.entities.TrackAlbumEntity
+import com.selincengiz.ritmo.data.local.entities.TrackEntity
+import com.selincengiz.ritmo.data.remote.dto.TrackAlbumDto
 import com.selincengiz.ritmo.data.remote.dto.AlbumResponse
-import com.selincengiz.ritmo.data.remote.dto.Artist
-import com.selincengiz.ritmo.data.remote.dto.Track
+import com.selincengiz.ritmo.data.remote.dto.ArtistDto
+import com.selincengiz.ritmo.data.remote.dto.TrackDto
 import com.selincengiz.ritmo.domain.model.AlbumUI
 import com.selincengiz.ritmo.domain.model.ArtistUI
 import com.selincengiz.ritmo.domain.model.TrackAlbumUI
@@ -12,10 +14,10 @@ import com.selincengiz.ritmo.domain.model.TrackUI
 
 object Mappers {
 
-    fun Track.toTrackUI(): TrackUI {
+    fun TrackDto.toTrackUI(): TrackUI {
         return TrackUI(
-            album?.toTrackAlbumUI(),
-            artist?.toArtistUI(),
+            trackAlbumDto?.toTrackAlbumUI(),
+            artistDto?.toArtistUI(),
             duration,
             explicitContentCover,
             explicitContentLyrics,
@@ -33,8 +35,80 @@ object Mappers {
         )
     }
 
-    fun Album.toTrackAlbumUI(): TrackAlbumUI {
+    fun TrackEntity.toTrackUI(): TrackUI {
+        return TrackUI(
+            albumEntity?.toTrackAlbumUI(),
+            artistEntity?.toArtistUI(),
+            duration,
+            explicitContentCover,
+            explicitContentLyrics,
+            explicitLyrics,
+            id,
+            link,
+            md5Image,
+            preview,
+            rank,
+            readable,
+            title,
+            titleShort,
+            titleVersion,
+            type
+        )
+    }
+
+    fun TrackUI.toTrackEntity(): TrackEntity {
+        return TrackEntity(
+            album?.toTrackAlbumEntity(),
+            artist?.toArtistEntity(),
+            duration,
+            explicitContentCover,
+            explicitContentLyrics,
+            explicitLyrics,
+            id,
+            link,
+            md5Image,
+            preview,
+            rank,
+            readable,
+            title,
+            titleShort,
+            titleVersion,
+            type
+        )
+    }
+
+    private fun TrackAlbumDto.toTrackAlbumUI(): TrackAlbumUI {
         return TrackAlbumUI(
+            cover,
+            coverBig,
+            coverMedium,
+            coverSmall,
+            coverXl,
+            id,
+            md5Image,
+            title,
+            tracklist,
+            type,
+        )
+    }
+
+    private fun TrackAlbumEntity.toTrackAlbumUI(): TrackAlbumUI {
+        return TrackAlbumUI(
+            cover,
+            coverBig,
+            coverMedium,
+            coverSmall,
+            coverXl,
+            id,
+            md5Image,
+            title,
+            tracklist,
+            type,
+        )
+    }
+
+    private fun TrackAlbumUI.toTrackAlbumEntity(): TrackAlbumEntity {
+        return TrackAlbumEntity(
             cover,
             coverBig,
             coverMedium,
@@ -50,9 +124,9 @@ object Mappers {
 
     fun AlbumResponse.toAlbumUI(): AlbumUI {
         return AlbumUI(
-            artist?.toArtistUI(),
+            artistDto?.toArtistUI(),
             available,
-            contributors,
+            contributorDtos,
             cover,
             coverBig,
             coverMedium,
@@ -74,14 +148,42 @@ object Mappers {
             share,
             title,
             tracklist,
-            tracks?.data?.map { it.toTrackUI() },
+            tracksDto?.data?.map { it.toTrackUI() },
             type,
             upc,
         )
     }
 
-    fun Artist.toArtistUI(): ArtistUI {
+    private fun ArtistDto.toArtistUI(): ArtistUI {
         return ArtistUI(
+            id,
+            name,
+            picture,
+            pictureBig,
+            pictureMedium,
+            pictureSmall,
+            pictureXl,
+            tracklist,
+            type,
+        )
+    }
+
+    private fun ArtistEntity.toArtistUI(): ArtistUI {
+        return ArtistUI(
+            id,
+            name,
+            picture,
+            pictureBig,
+            pictureMedium,
+            pictureSmall,
+            pictureXl,
+            tracklist,
+            type,
+        )
+    }
+
+    private fun ArtistUI.toArtistEntity(): ArtistEntity {
+        return ArtistEntity(
             id,
             name,
             picture,

@@ -1,13 +1,12 @@
 package com.selincengiz.ritmo.domain.model
 
-import com.selincengiz.ritmo.data.remote.dto.Contributor
-import com.selincengiz.ritmo.data.remote.dto.Tracks
+import com.selincengiz.ritmo.data.remote.dto.ContributorDto
 
 
 data class AlbumUI(
     val artist: ArtistUI?,
     val available: Boolean?,
-    val contributors: List<Contributor>?,
+    val contributorDtos: List<ContributorDto>?,
     val cover: String?,
     val coverBig: String?,
     val coverMedium: String?,

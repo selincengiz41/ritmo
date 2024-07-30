@@ -3,7 +3,7 @@ package com.selincengiz.ritmo.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class Album(
+data class TrackAlbumDto(
     @SerializedName("cover")
     val cover: String?,
     @SerializedName("cover_big")

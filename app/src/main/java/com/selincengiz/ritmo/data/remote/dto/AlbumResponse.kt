@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 data class AlbumResponse(
     @SerializedName("artist")
-    val artist: Artist?,
+    val artistDto: ArtistDto?,
     @SerializedName("available")
     val available: Boolean?,
     @SerializedName("contributors")
-    val contributors: List<Contributor>?,
+    val contributorDtos: List<ContributorDto>?,
     @SerializedName("cover")
     val cover: String?,
     @SerializedName("cover_big")
@@ -53,7 +53,7 @@ data class AlbumResponse(
     @SerializedName("tracklist")
     val tracklist: String?,
     @SerializedName("tracks")
-    val tracks: Tracks?,
+    val tracksDto: TracksDto?,
     @SerializedName("type")
     val type: String?,
     @SerializedName("upc")

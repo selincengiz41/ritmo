@@ -27,9 +27,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +41,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,7 +63,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
+import com.selincengiz.ritmo.presentation.player.components.ControlButton
+import com.selincengiz.ritmo.presentation.player.components.TrackSlider
+import com.selincengiz.ritmo.util.Extensions.convertToText
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
 
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(UnstableApi::class)
@@ -69,44 +78,47 @@ fun PlayerScreen(
     event: (PlayerEvent) -> Unit,
 ) {
     val context = LocalContext.current
-
-
     val exoPlayer = ExoPlayer.Builder(context).build()
-    exoPlayer.addListener(object : Player.Listener {
-        override fun onEvents(player: Player, events: Player.Events) {
-            super.onEvents(player, events)
-            // Hide video title after playing for 200 milliseconds
-            //if (player.contentPosition >= 200) visible.value = false
-        }
 
-        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-            super.onMediaItemTransition(mediaItem, reason)
-         /*   // Callback when the video changes
-            onVideoChange(this@apply.currentPeriodIndex)
-            visible.value = true
-            videoTitle.value = mediaItem?.mediaMetadata?.displayTitle.toString()*/
-        }
-
-        override fun onPlaybackStateChanged(playbackState: Int) {
-            super.onPlaybackStateChanged(playbackState)
-            // Callback when the video playback state changes to STATE_ENDED
-         /*   if (playbackState == ExoPlayer.STATE_ENDED) {
-                isVideoEnded.invoke(true)
-            }*/
-        }
-    })
-    // Set MediaSource to ExoPlayer
     LaunchedEffect(state.track?.preview) {
-        val mediaItem = MediaItem.Builder()
-            .setUri(state.track?.preview ?: "")
-            .setMediaMetadata(MediaMetadata.Builder().setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC).build())
-            .build()
-        exoPlayer.setMediaItem(mediaItem)
-        exoPlayer.pauseAtEndOfMediaItems = true
+        val mediaItem = MediaItem.fromUri(state.track?.preview ?: "")
+        exoPlayer.addMediaItem(mediaItem)
     }
     exoPlayer.prepare()
+    exoPlayer.playWhenReady = true
     exoPlayer.play()
 
+    val isPlaying = remember {
+        mutableStateOf(false)
+    }
+
+    val currentPosition = remember {
+        mutableLongStateOf(0)
+    }
+
+    val sliderPosition = remember {
+        mutableLongStateOf(0)
+    }
+
+    val totalDuration = remember {
+        mutableLongStateOf(0)
+    }
+
+
+    LaunchedEffect(key1 = exoPlayer.currentPosition, key2 = exoPlayer.isPlaying) {
+        delay(1000)
+        currentPosition.longValue = exoPlayer.currentPosition
+    }
+
+    LaunchedEffect(currentPosition.longValue) {
+        sliderPosition.longValue = currentPosition.longValue
+    }
+
+    LaunchedEffect(exoPlayer.duration) {
+        if (exoPlayer.duration > 0) {
+            totalDuration.longValue = exoPlayer.duration
+        }
+    }
     LocalLifecycleOwner.current.lifecycle.addObserver(object : LifecycleEventObserver {
         override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
             when (event) {
@@ -203,17 +215,71 @@ fun PlayerScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        AndroidView(
-            factory = { ctx ->
-                PlayerView(ctx).apply {
-                    player = exoPlayer
-
-                }
-            },
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp) // Set your desired height
-        )
+                .padding(horizontal = 32.dp)
+        ) {
+            TrackSlider(
+                value = sliderPosition.longValue.toFloat(),
+                onValueChange = {
+                    sliderPosition.longValue = it.toLong()
+                },
+                onValueChangeFinished = {
+                    currentPosition.longValue = sliderPosition.longValue
+                    exoPlayer.seekTo(sliderPosition.longValue)
+                },
+                songDuration = totalDuration.longValue.toFloat()
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+
+                Text(
+                    text = (currentPosition.longValue).convertToText(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp),
+                    color = Color.White,
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                )
+
+                val remainTime = totalDuration.longValue - currentPosition.longValue
+                Text(
+                    text = if (remainTime >= 0) remainTime.convertToText() else "",
+                    modifier = Modifier
+                        .padding(8.dp),
+                    color = Color.White,
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                )
+            }
+        }
+
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ControlButton(icon = R.drawable.ic_previous, size = 40.dp, onClick = {
+                exoPlayer.seekToPreviousMediaItem()
+            })
+            Spacer(modifier = Modifier.width(20.dp))
+            ControlButton(
+                icon = if (isPlaying.value) R.drawable.ic_pause else R.drawable.ic_play,
+                size = 100.dp,
+                onClick = {
+                    if (isPlaying.value) {
+                        exoPlayer.pause()
+                    } else {
+                        exoPlayer.play()
+                    }
+                    isPlaying.value = exoPlayer.isPlaying
+                })
+            Spacer(modifier = Modifier.width(20.dp))
+            ControlButton(icon = R.drawable.ic_next, size = 40.dp, onClick = {
+                exoPlayer.seekToNextMediaItem()
+            })
+        }
 
     }
 }

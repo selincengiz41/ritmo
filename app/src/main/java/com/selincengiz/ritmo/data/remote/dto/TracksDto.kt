@@ -3,7 +3,7 @@ package com.selincengiz.ritmo.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class Tracks(
+data class TracksDto(
     @SerializedName("data")
-    val `data`: List<Track>?
+    val `data`: List<TrackDto>?
 )

@@ -2,7 +2,7 @@ package com.selincengiz.ritmo.data.remote
 
 import com.selincengiz.ritmo.data.remote.dto.AlbumResponse
 import com.selincengiz.ritmo.data.remote.dto.SearchResponse
-import com.selincengiz.ritmo.data.remote.dto.Track
+import com.selincengiz.ritmo.data.remote.dto.TrackDto
 import com.selincengiz.ritmo.util.Constants.ALBUM
 import com.selincengiz.ritmo.util.Constants.SEARCH
 import com.selincengiz.ritmo.util.Constants.TRACK
@@ -25,5 +25,5 @@ interface RitmoApi {
     @GET(TRACK)
     suspend fun getTrack(
         @Path("id") id: String,
-    ): Track
+    ): TrackDto
 }

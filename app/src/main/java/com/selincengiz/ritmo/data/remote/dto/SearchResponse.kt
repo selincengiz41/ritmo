@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class SearchResponse(
     @SerializedName("data")
-    val `data`: List<Track?>?,
+    val `data`: List<TrackDto?>?,
     @SerializedName("next")
     val next: String?,
     @SerializedName("total")

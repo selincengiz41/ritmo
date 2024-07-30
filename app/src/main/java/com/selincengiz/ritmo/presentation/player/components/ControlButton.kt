@@ -26,7 +26,7 @@ fun ControlButton(icon: Int, size: Dp, onClick: () -> Unit) {
         Icon(
             modifier = Modifier.size(size / 1.5f),
             painter = painterResource(id = icon),
-            tint = Color.Black,
+            tint = Color.White,
             contentDescription = null
         )
     }
