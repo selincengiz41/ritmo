@@ -1,6 +1,7 @@
 package com.selincengiz.ritmo.presentation.navigator
 
-import android.util.Log
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -22,6 +23,7 @@ import com.selincengiz.ritmo.presentation.detail.DetailScreen
 import com.selincengiz.ritmo.presentation.detail.DetailViewModel
 import com.selincengiz.ritmo.presentation.detail.DetailsEvent
 import com.selincengiz.ritmo.presentation.favorite.FavoriteScreen
+import com.selincengiz.ritmo.presentation.favorite.FavoriteViewModel
 import com.selincengiz.ritmo.presentation.home.HomeScreen
 import com.selincengiz.ritmo.presentation.home.HomeViewModel
 import com.selincengiz.ritmo.presentation.main.components.Route
@@ -36,6 +38,7 @@ import com.selincengiz.ritmo.presentation.search.SearchScreen
 import com.selincengiz.ritmo.presentation.search.SearchViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun RitmoNavigator(navigateToLogin: () -> Unit) {
     val bottomNavigationItems = remember {
@@ -122,6 +125,13 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                             id = id,
                             route = Route.DetailScreen.route
                         )
+                    },
+                    navigateToPlayer = { id ->
+                        navigateToArgs(
+                            navController = navController,
+                            id = id,
+                            route = Route.PlayerScreen.route
+                        )
                     }
                 )
             }
@@ -175,12 +185,17 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
             }
 
             composable(route = Route.FavoriteScreen.route) {
-                //  val viewModel: BookmarkViewModel = hiltViewModel()
-                //  val state = viewModel.state.value
+                val viewModel: FavoriteViewModel = hiltViewModel()
+                val state = viewModel.state.value
                 FavoriteScreen(
-                    /* state = state, navigateToDetail = {
-                     navigateToDetail(navController = navController, article = it)
-                 }*/
+                    state = state,
+                    navigateToPlayer = { id ->
+                        navigateToArgs(
+                            navController = navController,
+                            id = id,
+                            route = Route.PlayerScreen.route
+                        )
+                    }
                 )
             }
 

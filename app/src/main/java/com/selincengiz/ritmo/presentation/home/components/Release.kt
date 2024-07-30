@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
@@ -36,13 +37,19 @@ import com.selincengiz.ritmo.presentation.Dimens.SmallPadding
 import com.selincengiz.ritmo.ui.theme.DarkGray
 
 @Composable
-fun Release(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: () -> Unit) {
+fun Release(
+    modifier: Modifier = Modifier,
+    trackUI: TrackUI,
+    isFavorite: Boolean = false,
+    onPlayClick: () -> Unit
+) {
     val context = LocalContext.current
     Row(
         modifier
+            .clickable { onPlayClick() }
             .clip(RoundedCornerShape(6.dp))
             .background(DarkGray.copy(alpha = 0.6f))
-            .clickable { onClick() }) {
+    ) {
 
         AsyncImage(
             modifier = Modifier
@@ -83,7 +90,7 @@ fun Release(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: () -> Unit
             ) {
 
                 Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
+                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
                     tint = Color.White
                 )
@@ -119,9 +126,7 @@ private fun ReleasePrev() {
             null,
             null,
             null,
-        )
-    ) {
-
-    }
-
+        ),
+        onPlayClick = {},
+    )
 }

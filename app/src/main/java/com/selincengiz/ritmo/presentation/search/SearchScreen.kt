@@ -46,7 +46,8 @@ import com.selincengiz.ritmo.ui.theme.BlueButtonColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    modifier: Modifier = Modifier, state: SearchState,
+    modifier: Modifier = Modifier,
+    state: SearchState,
     event: (SearchEvent) -> Unit,
     navigateToPlayer: (String) -> Unit
 ) {

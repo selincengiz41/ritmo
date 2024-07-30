@@ -64,7 +64,7 @@ object Mappers {
             explicitContentCover,
             explicitContentLyrics,
             explicitLyrics,
-            id,
+            id?:"",
             link,
             md5Image,
             preview,

@@ -31,7 +31,12 @@ import com.selincengiz.ritmo.presentation.home.components.ArtistCard
 import com.selincengiz.ritmo.presentation.home.components.Release
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, state: HomeState, navigateToDetail: (String) -> Unit) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    state: HomeState,
+    navigateToDetail: (String) -> Unit,
+    navigateToPlayer: (String) -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -85,7 +90,7 @@ fun HomeScreen(modifier: Modifier = Modifier, state: HomeState, navigateToDetail
                         state.discover?.get(it)?.let { album ->
                             AlbumCard(
                                 albumUI = album,
-                                onClick = { navigateToDetail(album.id?:"") })
+                                onClick = { navigateToDetail(album.id ?: "") })
                         }
                     }
                 }
@@ -102,10 +107,10 @@ fun HomeScreen(modifier: Modifier = Modifier, state: HomeState, navigateToDetail
 
                 Release(
                     modifier = Modifier.padding(MediumPadding1),
-                    trackUI = state.track ?: return@Column
-                ) {
-
-                }
+                    trackUI = state.track ?: return@Column,
+                    isFavorite = state.isFavorite ?: false,
+                    onPlayClick = { navigateToPlayer(state.track.id ?: "") },
+                )
 
                 Spacer(modifier = Modifier.height(MediumPadding1))
                 Text(
@@ -139,7 +144,6 @@ fun HomeScreen(modifier: Modifier = Modifier, state: HomeState, navigateToDetail
 @Preview
 @Composable
 private fun HomePrev() {
-    HomeScreen(state = HomeState()){
+    HomeScreen(state = HomeState(), navigateToPlayer = {}, navigateToDetail = {})
 
-    }
 }

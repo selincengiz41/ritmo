@@ -14,7 +14,7 @@ data class TrackEntity(
     val explicitContentLyrics: Int?,
     val explicitLyrics: Boolean?,
     @PrimaryKey
-    val id: String?,
+    val id: String,
     val link: String?,
     val md5Image: String?,
     val preview: String?,
