@@ -96,6 +96,7 @@ dependencies {
 
     //Accompanist
     implementation (libs.accompanist.systemuicontroller)
+    implementation (libs.accompanist.permissions)
 
     //Paging 3
     implementation (libs.androidx.paging.runtime)
@@ -114,6 +115,8 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
     //Chucker
     implementation(libs.library)

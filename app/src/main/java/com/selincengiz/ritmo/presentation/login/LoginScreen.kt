@@ -50,11 +50,19 @@ fun LoginScreen(loginState: LoginState, event: (LoginEvent) -> Unit, navigateToH
     LaunchedEffect(loginState) {
         when (loginState) {
             is LoginState.Error -> {
-                snackbarHostState.showSnackbar(loginState.throwable)
+                snackbarHostState.showSnackbar(
+                    loginState.throwable,
+                    duration = SnackbarDuration.Short,
+                    withDismissAction = true
+                )
             }
 
             is LoginState.Success -> {
-                snackbarHostState.showSnackbar("Success", duration = SnackbarDuration.Short)
+                snackbarHostState.showSnackbar(
+                    "Success",
+                    duration = SnackbarDuration.Short,
+                    withDismissAction = true
+                )
                 navigateToHome()
             }
 

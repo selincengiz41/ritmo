@@ -1,6 +1,9 @@
 package com.selincengiz.ritmo.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class TrackUI(
     val album: TrackAlbumUI?,
     val artist: ArtistUI?,
@@ -18,4 +21,4 @@ data class TrackUI(
     val titleShort: String?,
     val titleVersion: String?,
     val type: String?
-)
+):Parcelable

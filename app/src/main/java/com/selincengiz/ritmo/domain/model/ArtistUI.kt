@@ -1,6 +1,9 @@
 package com.selincengiz.ritmo.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ArtistUI (
     val id: String?,
     val name: String?,
@@ -11,4 +14,4 @@ data class ArtistUI (
     val pictureXl: String?,
     val tracklist: String?,
     val type: String?
-)
+):Parcelable

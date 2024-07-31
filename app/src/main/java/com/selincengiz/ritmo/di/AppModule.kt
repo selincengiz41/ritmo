@@ -3,6 +3,7 @@ package com.selincengiz.ritmo.di
 import android.content.Context
 import androidx.room.Room
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.selincengiz.ritmo.data.local.RitmoDao
 import com.selincengiz.ritmo.data.local.RitmoDatabase
@@ -44,6 +45,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFirebaseAuth() = Firebase.auth
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestore() = FirebaseFirestore.getInstance()
 
     @Provides
     @Singleton

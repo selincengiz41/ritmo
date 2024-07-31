@@ -1,6 +1,8 @@
 package com.selincengiz.ritmo.domain.model
 
+import android.os.Parcelable
 import com.selincengiz.ritmo.data.remote.dto.ContributorDto
+import kotlinx.parcelize.Parcelize
 
 
 data class AlbumUI(

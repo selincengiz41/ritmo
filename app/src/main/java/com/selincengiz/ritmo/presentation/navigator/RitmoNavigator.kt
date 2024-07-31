@@ -204,6 +204,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
 
                 ProfileScreen(
                     event = viewModel::onEvent,
+                    state = viewModel.state.value,
                     navigateToLogin = navigateToLogin
                 )
             }
