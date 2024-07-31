@@ -2,11 +2,11 @@ package com.selincengiz.ritmo.presentation.player
 
 import android.content.Intent
 import android.os.Build
-import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,20 +16,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,19 +56,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.selincengiz.ritmo.R
+import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
+import com.selincengiz.ritmo.presentation.common.Playlist
 import com.selincengiz.ritmo.presentation.player.components.ControlButton
 import com.selincengiz.ritmo.presentation.player.components.TrackSlider
 import com.selincengiz.ritmo.util.Extensions.convertToText
 import kotlinx.coroutines.delay
 
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.P)
-@OptIn(UnstableApi::class)
 @Composable
 fun PlayerScreen(
     modifier: Modifier = Modifier,
@@ -70,6 +78,8 @@ fun PlayerScreen(
 ) {
     val context = LocalContext.current
     val exoPlayer = ExoPlayer.Builder(context).build()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
 
     LaunchedEffect(state.track?.preview) {
         val mediaItem = MediaItem.fromUri(state.track?.preview ?: "")
@@ -169,6 +179,16 @@ fun PlayerScreen(
             Icon(
                 painter = painterResource(id = R.drawable.ic_download),
                 contentDescription = "Download",
+                tint = Color.White
+            )
+            Spacer(modifier = Modifier.width(35.dp))
+            Icon(
+                modifier = Modifier.clickable {
+                    event(PlayerEvent.GetPlaylists)
+                    showBottomSheet = !showBottomSheet
+                },
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add",
                 tint = Color.White
             )
         }
@@ -281,6 +301,38 @@ fun PlayerScreen(
                 exoPlayer.seekToNextMediaItem()
             })
         }
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showBottomSheet = false
+                },
+                sheetState = sheetState,
+                contentColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.7f),
+            ) {
+                state.playlists.let {
+                    LazyColumn(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(start = 15.dp),
+                        verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+                        contentPadding = PaddingValues(all = ExtraSmallPadding2)
+                    ) {
+                        items(count = it.size) { item ->
+                            it[item]?.let { playlist ->
+                                Playlist(
+                                    playlistUI = playlist,
+                                    onClick = {
+                                        event(PlayerEvent.AddToPlaylist(playlist.id))
+                                        showBottomSheet = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
 
+            }
+        }
     }
 }

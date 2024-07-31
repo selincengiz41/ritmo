@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
+import com.selincengiz.ritmo.domain.model.ListTrackUI
 import com.selincengiz.ritmo.domain.model.PlaylistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,7 +56,6 @@ class ProfileViewModel @Inject constructor(
             db.collection("users").document(auth.currentUser!!.uid).collection("playlists")
 
         val playlistData = mapOf(
-
             "name" to name,
             "tracks" to listOf<TrackUI>() // Çalma listesine eklemek istediğiniz şarkıların listesi
         )
@@ -89,7 +89,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun getPlaylists() {
-
         val playlistsRef =
             db.collection("users").document(auth.currentUser!!.uid).collection("playlists")
         try {
@@ -101,7 +100,7 @@ class ProfileViewModel @Inject constructor(
                         PlaylistUI(
                             id = doc.id,
                             name = doc.get("name") as String,
-                            tracks = doc.get("tracks") as MutableList<TrackUI>
+                            tracks = doc.toObject(ListTrackUI::class.java).listTrack.toMutableList()
                         )
                     )
                 }
