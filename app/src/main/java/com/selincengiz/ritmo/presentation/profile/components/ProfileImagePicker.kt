@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,14 +48,13 @@ fun ProfileImagePicker(
     state: ProfileState
 ) {
     val context = LocalContext.current
-    val name = context.packageName
-
     // Image picker launcher
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             if (uri != null) {
-                context.grantUriPermission(name, state.image, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val name = context.packageName
+                context.grantUriPermission(name, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 event(ProfileEvent.PickImage(uri))
             }
         }
@@ -92,7 +90,12 @@ fun ProfileImagePicker(
                 .clickable {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         // For Android 14+, handle the new selected photo access permission
-                        permissionLauncher.launch(arrayOf(READ_MEDIA_IMAGES))
+                        permissionLauncher.launch(
+                            arrayOf(
+                                READ_MEDIA_IMAGES,
+                                READ_MEDIA_VISUAL_USER_SELECTED
+                            )
+                        )
                     } else {
                         // For older versions, use the standard permission
                         permissionLauncher.launch(arrayOf(READ_EXTERNAL_STORAGE))
@@ -100,7 +103,7 @@ fun ProfileImagePicker(
                 },
             model = state.image,
             placeholder = painterResource(id = R.drawable.placeholder),
-            error = painterResource(id = R.drawable.placeholder),
+            error = painterResource(id = R.drawable.ic_pause),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             onError = { it -> Log.i("aut", it.result.throwable.message ?: "") }
