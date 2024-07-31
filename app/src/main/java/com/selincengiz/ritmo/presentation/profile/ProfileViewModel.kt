@@ -55,6 +55,7 @@ class ProfileViewModel @Inject constructor(
             db.collection("users").document(auth.currentUser!!.uid).collection("playlists")
 
         val playlistData = mapOf(
+
             "name" to name,
             "tracks" to listOf<TrackUI>() // Çalma listesine eklemek istediğiniz şarkıların listesi
         )
@@ -98,6 +99,7 @@ class ProfileViewModel @Inject constructor(
                 playlistsSnapshot?.forEach { doc ->
                     templist.add(
                         PlaylistUI(
+                            id = doc.id,
                             name = doc.get("name") as String,
                             tracks = doc.get("tracks") as MutableList<TrackUI>
                         )

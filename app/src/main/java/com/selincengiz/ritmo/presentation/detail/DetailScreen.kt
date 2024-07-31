@@ -19,12 +19,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
@@ -44,6 +46,7 @@ fun DetailScreen(
         AsyncImage(
             model = ImageRequest.Builder(context).data(state.album?.coverBig).build(),
             contentDescription = null,
+            error = painterResource(id = R.drawable.placeholder),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,7 +71,7 @@ fun DetailScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = MediumPadding1),
-            text = state.album?.title ?: "",
+            text = state.album?.title ?: state.playlist?.name ?: "",
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = Bold),
             color = Color.White,
             maxLines = 2,
@@ -86,6 +89,20 @@ fun DetailScreen(
             ) {
                 items(count = state.album?.tracks?.size ?: 0) {
                     state.album?.tracks?.get(it)?.let { track ->
+                        ListedRitmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
+                    }
+                }
+            }
+        } ?:run {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp),
+                verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+                contentPadding = PaddingValues(all = ExtraSmallPadding2)
+            ) {
+                items(count = state.playlist?.tracks?.size ?: 0) {
+                    state.playlist?.tracks?.get(it)?.let { track ->
                         ListedRitmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
                     }
                 }

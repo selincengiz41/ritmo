@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PlaylistUI(
+    val id: String,
     val name: String,
     val tracks: MutableList<TrackUI>
-):Parcelable
+) : Parcelable

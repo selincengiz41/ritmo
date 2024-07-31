@@ -54,7 +54,8 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     event: (ProfileEvent) -> Unit,
     state: ProfileState,
-    navigateToLogin: () -> Unit
+    navigateToLogin: () -> Unit,
+    navigateToDetail: (String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var showDialog by remember { mutableStateOf(false) }
@@ -117,7 +118,7 @@ fun ProfileScreen(
                         it[item]?.let { playlist ->
                             Playlist(
                                 playlistUI = playlist,
-                                onClick = { })
+                                onClick = { navigateToDetail(playlist.id) })
                         }
                     }
                 }

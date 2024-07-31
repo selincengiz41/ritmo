@@ -157,7 +157,9 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 val viewModel: DetailViewModel = hiltViewModel()
                 navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
                     ?.let { id ->
+                        viewModel.onEvent(DetailsEvent.GetPlaylist(id))
                         viewModel.onEvent(DetailsEvent.GetAlbum(id))
+
                         DetailScreen(
                             state = viewModel.state.value,
                             event = viewModel::onEvent,
@@ -205,7 +207,15 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 ProfileScreen(
                     event = viewModel::onEvent,
                     state = viewModel.state.value,
-                    navigateToLogin = navigateToLogin
+                    navigateToLogin = navigateToLogin,
+                    navigateToDetail = { id ->
+                        navigateToArgs(
+                            navController = navController,
+                            id = id,
+                            route = Route.DetailScreen.route
+                        )
+
+                    }
                 )
             }
         }
