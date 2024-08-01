@@ -29,6 +29,8 @@ interface RitmoRepository {
 
     suspend fun getPlaylists(): List<PlaylistUI?>
 
+    suspend fun getPlaylist(id: String): PlaylistUI?
+
     fun createPlaylist(name: String)
 
     suspend fun addTrackToPlaylist(playlistId: String, track: TrackUI)

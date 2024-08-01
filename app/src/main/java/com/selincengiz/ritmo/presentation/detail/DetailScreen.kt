@@ -87,14 +87,14 @@ fun DetailScreen(
                 verticalArrangement = Arrangement.spacedBy(MediumPadding1),
                 contentPadding = PaddingValues(all = ExtraSmallPadding2)
             ) {
-                items(count = state.album?.tracks?.size ?: 0) {
-                    state.album?.tracks?.get(it)?.let { track ->
+                items(count = state.album.tracks?.size ?: 0) {
+                    state.album.tracks?.get(it)?.let { track ->
                         ListedRitmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
                     }
                 }
             }
-        } ?:run {
-            //TODO: Playlist Detail
+        }
+        state.playlist?.let {
             LazyColumn(
                 modifier = modifier
                     .fillMaxWidth()
@@ -102,8 +102,8 @@ fun DetailScreen(
                 verticalArrangement = Arrangement.spacedBy(MediumPadding1),
                 contentPadding = PaddingValues(all = ExtraSmallPadding2)
             ) {
-                items(count = state.playlist?.tracks?.size ?: 0) {
-                    state.playlist?.tracks?.get(it)?.let { track ->
+                items(count = state.playlist.tracks?.size ?: 0) {
+                    state.playlist.tracks?.get(it)?.let { track ->
                         ListedRitmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
                     }
                 }

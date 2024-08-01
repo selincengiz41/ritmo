@@ -11,6 +11,7 @@ import com.selincengiz.ritmo.domain.usecase.ritmo.RitmoUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo.Search
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.AddToPlaylist
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.CreatePlaylists
+import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.GetPlaylist
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.GetPlaylists
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.RitmoFirebaseUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo_local.DeleteTrack
@@ -65,6 +66,7 @@ object UseCaseModule {
     ) = RitmoFirebaseUseCase(
         getPlaylists = GetPlaylists(ritmoRepository),
         createPlaylist = CreatePlaylists(ritmoRepository),
-        addPlaylist = AddToPlaylist(ritmoRepository)
+        addPlaylist = AddToPlaylist(ritmoRepository),
+        getPlaylist = GetPlaylist(ritmoRepository)
     )
 }

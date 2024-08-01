@@ -17,6 +17,7 @@ import com.selincengiz.ritmo.domain.repository.RitmoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
 import okhttp3.internal.wait
 
 class RitmoRepositoryImpl(
@@ -53,30 +54,43 @@ class RitmoRepositoryImpl(
         return dao.getTrack(id)?.toTrackUI()
     }
 
+    override suspend fun getPlaylist(id: String): PlaylistUI? {
+        val playlistsRef = firestore
+            .collection("users")
+            .document(auth.currentUser!!.uid)
+            .collection("playlists")
+            .document(id)
+        try {
+            val playlistsSnapshot = playlistsRef.get().await()
+            if (playlistsSnapshot != null && playlistsSnapshot.exists()) {
+                return playlistsSnapshot.toObject(ListPlaylistUI::class.java)?.toPlaylistUI()
+            }
+        } catch (e: Exception) {
+            Log.i("getPlaylists", e.message.toString())
+        }
+        return null
+    }
 
     override suspend fun getPlaylists(): List<PlaylistUI?> {
         val playlistsRef = firestore
             .collection("users")
             .document(auth.currentUser!!.uid)
             .collection("playlists")
-        var returnList = mutableListOf<ListPlaylistUI?>()
-        try {
-            playlistsRef.addSnapshotListener { playlistsSnapshot, _ ->
-                val tempList = mutableListOf<ListPlaylistUI?>()
-                playlistsSnapshot?.forEach { doc ->
-                    tempList.add(
-                        doc.toObject(ListPlaylistUI::class.java)
-                    )
-                }
-                returnList=tempList
+        return try {
+            val playlistsSnapshot = playlistsRef.get().await()
+            val tempList = playlistsSnapshot.documents.map { doc ->
+                doc.toObject(ListPlaylistUI::class.java)
+            }.toMutableList()
+
+            for (i in 1..playlistsSnapshot.documents.size) {
+                tempList[i-1]?.id = playlistsSnapshot.documents[i-1].id
             }
+            tempList.map { it?.toPlaylistUI() }
 
         } catch (e: Exception) {
             Log.i("getPlaylists", e.message.toString())
+            emptyList()
         }
-        Log.i("getPlaylists", returnList.get(0)?.name.toString())
-
-        return returnList.map { it?.toPlaylistUI() }
     }
 
     override fun createPlaylist(name: String) {
@@ -84,6 +98,7 @@ class RitmoRepositoryImpl(
             .collection("users")
             .document(auth.currentUser!!.uid)
             .collection("playlists")
+
         val playlistData = mapOf(
             "name" to name,
             "tracks" to listOf<TrackUI>()
@@ -109,10 +124,10 @@ class RitmoRepositoryImpl(
             "tracks",
             newList
         ).addOnSuccessListener {
-                println("Playlist successfully added!")
-            }.addOnFailureListener { e ->
-                println("Error adding playlist: $e")
-            }
+            println("Playlist successfully added!")
+        }.addOnFailureListener { e ->
+            println("Error adding playlist: $e")
+        }
     }
 
 }
