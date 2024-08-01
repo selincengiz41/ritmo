@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.selincengiz.ritmo.R
-import com.selincengiz.ritmo.presentation.Dimens
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.search.components.CustomSearchBar
@@ -53,7 +51,6 @@ fun SearchScreen(
 ) {
     var historyVisibility by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
     Column(
@@ -74,7 +71,7 @@ fun SearchScreen(
             tint = Color.White
         )
 
-        Spacer(modifier = Modifier.height(Dimens.ExtraSmallPadding2))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding2))
 
         CustomSearchBar(
             modifier = Modifier.padding(10.dp),
@@ -129,8 +126,8 @@ fun SearchScreen(
                     verticalArrangement = Arrangement.spacedBy(MediumPadding1),
                     contentPadding = PaddingValues(all = ExtraSmallPadding2)
                 ) {
-                    items(count = state.ritmo?.size ?: 0) {
-                        state.ritmo?.get(it)?.let { track ->
+                    items(count = state.ritmo.size) {
+                        state.ritmo[it]?.let { track ->
                             ListedRitmo(
                                 trackUI = track,
                                 onClick = { navigateToPlayer(track.id ?: "") })
@@ -154,11 +151,8 @@ fun SearchScreen(
 
                 SingleSelectionCheckbox(
                     state = state,
-                    event = event,
-                    onCheckedChange = { selected ->
-
-                    })
-
+                    event = event
+                )
             }
         }
     }

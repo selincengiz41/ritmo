@@ -60,7 +60,7 @@ fun ProfileScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var showDialog by remember { mutableStateOf(false) }
-    //TODO: Side Effect
+    //TODO: Side Effect & profile permission
     /* LaunchedEffect(state.sideEffect) {
          state.sideEffect?.let {
              snackbarHostState.showSnackbar(
@@ -71,8 +71,6 @@ fun ProfileScreen(
 
          }
      }*/
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()

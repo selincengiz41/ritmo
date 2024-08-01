@@ -4,19 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +22,6 @@ import com.selincengiz.ritmo.presentation.search.SearchState
 fun SingleSelectionCheckbox(
     state: SearchState,
     event: (SearchEvent) -> Unit,
-    onCheckedChange: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(16.dp),
@@ -44,7 +36,6 @@ fun SingleSelectionCheckbox(
                 checked = state.selected == 1,
                 onCheckedChange = {
                     if (it) event(SearchEvent.Filter(1)) else event(SearchEvent.Filter(0))
-                    onCheckedChange(state.selected)
                 },
                 colors = CheckboxDefaults.colors(
                     checkedColor = Color.Black,
@@ -64,7 +55,6 @@ fun SingleSelectionCheckbox(
                 checked = state.selected == 2,
                 onCheckedChange = {
                     if (it) event(SearchEvent.Filter(2)) else event(SearchEvent.Filter(0))
-                    onCheckedChange(state.selected)
                 },
                 colors = CheckboxDefaults.colors(
                     checkedColor = Color.Black,
@@ -84,7 +74,6 @@ fun SingleSelectionCheckbox(
                 checked = state.selected == 3,
                 onCheckedChange = {
                     if (it) event(SearchEvent.Filter(3)) else event(SearchEvent.Filter(0))
-                    onCheckedChange(state.selected)
                 },
                 colors = CheckboxDefaults.colors(
                     checkedColor = Color.Black,
@@ -101,5 +90,5 @@ fun SingleSelectionCheckbox(
 @Preview(showBackground = true)
 @Composable
 fun SingleSelectionCheckboxPreview() {
-    SingleSelectionCheckbox(onCheckedChange = {}, state = SearchState(), event = {})
+    SingleSelectionCheckbox( state = SearchState(), event = {})
 }

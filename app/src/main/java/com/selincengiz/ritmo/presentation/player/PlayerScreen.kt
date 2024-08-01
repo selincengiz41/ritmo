@@ -331,7 +331,6 @@ fun PlayerScreen(
                         }
                     }
                 }
-
             }
         }
     }

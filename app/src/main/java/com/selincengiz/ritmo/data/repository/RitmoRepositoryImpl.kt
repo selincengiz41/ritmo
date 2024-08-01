@@ -15,10 +15,8 @@ import com.selincengiz.ritmo.domain.model.PlaylistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.domain.repository.RitmoRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
-import okhttp3.internal.wait
 
 class RitmoRepositoryImpl(
     private val api: RitmoApi,
@@ -46,6 +44,7 @@ class RitmoRepositoryImpl(
         dao.delete(track.toTrackEntity())
     }
 
+    //TODO:Uygulama patlıyor bazen flowdan
     override fun getTracksLocal(): Flow<List<TrackUI>> {
         return dao.getTracks().map { it -> it.map { it.toTrackUI() } }
     }
@@ -71,6 +70,7 @@ class RitmoRepositoryImpl(
         return null
     }
 
+    //TODO:Firebase live okuma yok
     override suspend fun getPlaylists(): List<PlaylistUI?> {
         val playlistsRef = firestore
             .collection("users")
@@ -83,7 +83,7 @@ class RitmoRepositoryImpl(
             }.toMutableList()
 
             for (i in 1..playlistsSnapshot.documents.size) {
-                tempList[i-1]?.id = playlistsSnapshot.documents[i-1].id
+                tempList[i - 1]?.id = playlistsSnapshot.documents[i - 1].id
             }
             tempList.map { it?.toPlaylistUI() }
 

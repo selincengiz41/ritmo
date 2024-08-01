@@ -159,14 +159,13 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                     ?.let { id ->
                         viewModel.onEvent(DetailsEvent.GetPlaylist(id))
                         viewModel.onEvent(DetailsEvent.GetAlbum(id))
-
                         DetailScreen(
                             state = viewModel.state.value,
                             event = viewModel::onEvent,
-                            navigateToPlayer = { id ->
+                            navigateToPlayer = { playerId ->
                                 navigateToArgs(
                                     navController = navController,
-                                    id = id,
+                                    id = playerId,
                                     route = Route.PlayerScreen.route
                                 )
                             }
@@ -203,7 +202,6 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
 
             composable(route = Route.ProfileScreen.route) {
                 val viewModel: ProfileViewModel = hiltViewModel()
-
                 ProfileScreen(
                     event = viewModel::onEvent,
                     state = viewModel.state.value,
@@ -214,7 +212,6 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                             id = id,
                             route = Route.DetailScreen.route
                         )
-
                     }
                 )
             }

@@ -2,8 +2,6 @@ package com.selincengiz.ritmo.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.selincengiz.ritmo.domain.model.ArtistUI
-import com.selincengiz.ritmo.domain.model.TrackAlbumUI
 
 @Entity("Tracks")
 data class TrackEntity(

@@ -1,14 +1,12 @@
 package com.selincengiz.ritmo.presentation.profile
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
-import com.google.firebase.firestore.FirebaseFirestore
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.RitmoFirebaseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -73,5 +71,4 @@ class ProfileViewModel @Inject constructor(
                 }
             }
     }
-
 }

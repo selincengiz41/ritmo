@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.selincengiz.ritmo.R
-import com.selincengiz.ritmo.domain.model.AlbumUI
 import com.selincengiz.ritmo.domain.model.TrackAlbumUI
 import com.selincengiz.ritmo.presentation.Dimens
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding
