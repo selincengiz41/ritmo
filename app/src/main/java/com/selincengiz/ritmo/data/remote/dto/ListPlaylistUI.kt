@@ -1,4 +1,4 @@
-package com.selincengiz.ritmo.domain.model
+package com.selincengiz.ritmo.data.remote.dto
 
 
 class ListPlaylistUI {

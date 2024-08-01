@@ -9,11 +9,17 @@ import com.selincengiz.ritmo.data.remote.dto.ArtistDto
 import com.selincengiz.ritmo.data.remote.dto.TrackDto
 import com.selincengiz.ritmo.domain.model.AlbumUI
 import com.selincengiz.ritmo.domain.model.ArtistUI
+import com.selincengiz.ritmo.data.remote.dto.ListArtistUI
+import com.selincengiz.ritmo.data.remote.dto.ListPlaylistUI
+import com.selincengiz.ritmo.data.remote.dto.ListTrackAlbumUI
+import com.selincengiz.ritmo.data.remote.dto.ListTrackUI
+import com.selincengiz.ritmo.domain.model.PlaylistUI
 import com.selincengiz.ritmo.domain.model.TrackAlbumUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 
 object Mappers {
 
+    //API & ROOM
     fun TrackDto.toTrackUI(): TrackUI {
         return TrackUI(
             trackAlbumDto?.toTrackAlbumUI(),
@@ -64,7 +70,7 @@ object Mappers {
             explicitContentCover,
             explicitContentLyrics,
             explicitLyrics,
-            id?:"",
+            id ?: "",
             link,
             md5Image,
             preview,
@@ -193,6 +199,65 @@ object Mappers {
             pictureXl,
             tracklist,
             type,
+        )
+    }
+
+    //FIREBASE
+    fun ListPlaylistUI.toPlaylistUI(): PlaylistUI {
+        return PlaylistUI(
+            id,
+            name,
+            tracks.map { it.toTrackUI() }.toMutableList()
+        )
+    }
+
+    private fun ListTrackUI.toTrackUI(): TrackUI {
+        return TrackUI(
+            album?.toTrackAlbumUI(),
+            artist?.toArtistUI(),
+            duration,
+            explicitContentCover,
+            explicitContentLyrics,
+            explicitLyrics,
+            id,
+            link,
+            md5Image,
+            preview,
+            rank,
+            readable,
+            title,
+            titleShort,
+            titleVersion,
+            type
+        )
+    }
+
+    private fun ListTrackAlbumUI.toTrackAlbumUI(): TrackAlbumUI {
+        return TrackAlbumUI(
+            cover,
+            coverBig,
+            coverMedium,
+            coverSmall,
+            coverXl,
+            id,
+            md5Image,
+            title,
+            tracklist,
+            type
+        )
+    }
+
+    private fun ListArtistUI.toArtistUI(): ArtistUI {
+        return ArtistUI(
+            id,
+            name,
+            picture,
+            pictureBig,
+            pictureMedium,
+            pictureSmall,
+            pictureXl,
+            tracklist,
+            type
         )
     }
 }

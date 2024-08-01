@@ -1,6 +1,7 @@
 package com.selincengiz.ritmo.domain.repository
 
 import com.selincengiz.ritmo.domain.model.AlbumUI
+import com.selincengiz.ritmo.domain.model.PlaylistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 import kotlinx.coroutines.flow.Flow
 
@@ -25,4 +26,10 @@ interface RitmoRepository {
     fun getTracksLocal(): Flow<List<TrackUI>>
 
     suspend fun getTrackLocal(id: String): TrackUI?
+
+    suspend fun getPlaylists(): List<PlaylistUI?>
+
+    fun createPlaylist(name: String)
+
+    suspend fun addTrackToPlaylist(playlistId: String, track: TrackUI)
 }

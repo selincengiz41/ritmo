@@ -6,22 +6,18 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
-import com.selincengiz.ritmo.domain.model.ListPlaylistUI
-import com.selincengiz.ritmo.domain.model.PlaylistUI
-import com.selincengiz.ritmo.domain.model.TrackUI
+import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.RitmoFirebaseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val db: FirebaseFirestore
+    private val ritmoFirebaseUseCase: RitmoFirebaseUseCase,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
     private val _state = mutableStateOf(ProfileState())
@@ -32,7 +28,7 @@ class ProfileViewModel @Inject constructor(
             _state.value = state.value.copy(image = it)
         }
         getPlaylists()
-        Log.i("getPlaylists", _state.value.playlists.toString())
+      //  Log.i("getPlaylists", _state.value.playlists.get(0)?.name.toString())
     }
 
     fun onEvent(event: ProfileEvent) {
@@ -51,24 +47,15 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun getPlaylists() {
+        viewModelScope.launch {
+            val playlists = ritmoFirebaseUseCase.getPlaylists()
+            _state.value = state.value.copy(playlists = playlists)
+        }
+    }
+
     private fun createPlayList(name: String) {
-        val playlistsRef =
-            db.collection("users").document(auth.currentUser!!.uid).collection("playlists")
-
-        val playlistData = mapOf(
-            "name" to name,
-            "tracks" to listOf<TrackUI>() // Çalma listesine eklemek istediğiniz şarkıların listesi
-        )
-
-        playlistsRef.add(playlistData)
-            .addOnSuccessListener {
-                // Başarılı
-                println("Playlist successfully added!")
-            }
-            .addOnFailureListener { e ->
-                // Hata
-                println("Error adding playlist: $e")
-            }
+        ritmoFirebaseUseCase.createPlaylist(name = name)
     }
 
     private fun pickImage(uri: Uri) {
@@ -76,7 +63,6 @@ class ProfileViewModel @Inject constructor(
         val profileUpdates = userProfileChangeRequest {
             photoUri = _state.value.image
         }
-
         auth.currentUser?.updateProfile(profileUpdates)
             ?.addOnCompleteListener { task ->
                 task.addOnSuccessListener {
@@ -86,27 +72,6 @@ class ProfileViewModel @Inject constructor(
                     _state.value = state.value.copy(sideEffect = "Profile update is failed!")
                 }
             }
-    }
-
-    private fun getPlaylists() {
-        val playlistsRef =
-            db.collection("users").document(auth.currentUser!!.uid).collection("playlists")
-        try {
-            playlistsRef.addSnapshotListener { playlistsSnapshot, e ->
-                val templist = mutableListOf<ListPlaylistUI?>()
-
-                playlistsSnapshot?.forEach { doc ->
-                    templist.add(
-                        doc.toObject(ListPlaylistUI::class.java)
-                    )
-                }
-                Log.i("getPlaylists", templist[0]?.tracks?.get(0)?.preview.toString())
-               // _state.value = state.value.copy(playlists = templist)
-            }
-        } catch (e: Exception) {
-            // Hata yönetimi
-            Log.i("getPlaylists", e.message.toString())
-        }
     }
 
 }

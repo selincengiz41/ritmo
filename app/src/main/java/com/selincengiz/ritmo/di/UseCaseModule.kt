@@ -1,17 +1,5 @@
 package com.selincengiz.ritmo.di
 
-import android.content.Context
-import androidx.room.Room
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import com.selincengiz.ritmo.data.local.RitmoDao
-import com.selincengiz.ritmo.data.local.RitmoDatabase
-import com.selincengiz.ritmo.data.local.RitmoTypeConverter
-import com.selincengiz.ritmo.data.manager.LocalUserManagerImpl
-import com.selincengiz.ritmo.data.remote.RitmoApi
-import com.selincengiz.ritmo.data.repository.RitmoRepositoryImpl
 import com.selincengiz.ritmo.domain.manager.LocalUserManager
 import com.selincengiz.ritmo.domain.repository.RitmoRepository
 import com.selincengiz.ritmo.domain.usecase.app_entry.AppEntryUseCase
@@ -30,42 +18,53 @@ import com.selincengiz.ritmo.domain.usecase.ritmo_local.GetLocalTrack
 import com.selincengiz.ritmo.domain.usecase.ritmo_local.GetLocalTracks
 import com.selincengiz.ritmo.domain.usecase.ritmo_local.InsertTrack
 import com.selincengiz.ritmo.domain.usecase.ritmo_local.RitmoLocalUseCase
-import com.selincengiz.ritmo.util.Constants.RITMO_DATABASE
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
-    @Provides
-    @Singleton
-    fun provideLocalUserManager(
-        @ApplicationContext context: Context
-    ): LocalUserManager = LocalUserManagerImpl(context)
+object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth() = Firebase.auth
+    fun provideAppEntryUseCase(
+        localUserManager: LocalUserManager
+    ) = AppEntryUseCase(
+        readAppEntry = ReadAppEntry(localUserManager),
+        saveAppEntry = SaveAppEntry(localUserManager)
+    )
 
     @Provides
     @Singleton
-    fun provideFirebaseFirestore() = FirebaseFirestore.getInstance()
+    fun provideRitmoUseCase(
+        ritmoRepository: RitmoRepository
+    ) = RitmoUseCase(
+        getAlbum = GetAlbum(ritmoRepository),
+        getTrack = GetTrack(ritmoRepository),
+        search = Search(ritmoRepository)
+    )
 
     @Provides
     @Singleton
-    fun provideRitmoRepository(
-        ritmoApi: RitmoApi,
-        ritmoDao: RitmoDao,
-        firestore: FirebaseFirestore,
-        auth: FirebaseAuth
-    ): RitmoRepository = RitmoRepositoryImpl(
-        api = ritmoApi,
-        dao = ritmoDao,
-        firestore = firestore,
-        auth = auth
+    fun provideRitmoLocalUseCase(
+        ritmoRepository: RitmoRepository
+    ) = RitmoLocalUseCase(
+        insertTrack = InsertTrack(ritmoRepository),
+        deleteTrack = DeleteTrack(ritmoRepository),
+        getLocalTracks = GetLocalTracks(ritmoRepository),
+        getLocalTrack = GetLocalTrack(ritmoRepository)
+    )
+
+    @Provides
+    @Singleton
+    fun provideRitmoFirebaseUseCase(
+        ritmoRepository: RitmoRepository
+    ) = RitmoFirebaseUseCase(
+        getPlaylists = GetPlaylists(ritmoRepository),
+        createPlaylist = CreatePlaylists(ritmoRepository),
+        addPlaylist = AddToPlaylist(ritmoRepository)
     )
 }
