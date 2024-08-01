@@ -10,7 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
-import com.selincengiz.ritmo.domain.model.ListTrackUI
+import com.selincengiz.ritmo.domain.model.ListPlaylistUI
 import com.selincengiz.ritmo.domain.model.PlaylistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -93,18 +93,15 @@ class ProfileViewModel @Inject constructor(
             db.collection("users").document(auth.currentUser!!.uid).collection("playlists")
         try {
             playlistsRef.addSnapshotListener { playlistsSnapshot, e ->
-                val templist = mutableListOf<PlaylistUI?>()
+                val templist = mutableListOf<ListPlaylistUI?>()
 
                 playlistsSnapshot?.forEach { doc ->
                     templist.add(
-                        PlaylistUI(
-                            id = doc.id,
-                            name = doc.get("name") as String,
-                            tracks = doc.toObject(ListTrackUI::class.java).listTrack.toMutableList()
-                        )
+                        doc.toObject(ListPlaylistUI::class.java)
                     )
                 }
-                _state.value = state.value.copy(playlists = templist)
+                Log.i("getPlaylists", templist[0]?.tracks?.get(0)?.preview.toString())
+               // _state.value = state.value.copy(playlists = templist)
             }
         } catch (e: Exception) {
             // Hata yönetimi

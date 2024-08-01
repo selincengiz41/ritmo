@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.selincengiz.ritmo.domain.model.ListTrackUI
 import com.selincengiz.ritmo.domain.model.PlaylistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.domain.usecase.ritmo.RitmoUseCase
@@ -90,13 +89,15 @@ class PlayerViewModel @Inject constructor(
 
                 playlistsSnapshot?.forEach { doc ->
                     templist.add(
-                        PlaylistUI(
+                        doc.toObject(PlaylistUI::class.java)
+                  /*      PlaylistUI(
                             id = doc.id,
                             name = doc.get("name") as String,
                             tracks = doc.toObject(ListTrackUI::class.java).listTrack.toMutableList()
-                        )
+                        )*/
                     )
                 }
+                Log.i("getPlaylists", templist[0]?.tracks?.get(0)?.preview.toString())
                 _state.value = state.value.copy(playlists = templist)
             }
         } catch (e: Exception) {
