@@ -30,10 +30,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,33 +40,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.common.Playlist
-import com.selincengiz.ritmo.presentation.player.components.ControlButton
-import com.selincengiz.ritmo.presentation.player.components.TrackSlider
-import com.selincengiz.ritmo.presentation.profile.ProfileEvent
-import com.selincengiz.ritmo.util.Extensions.convertToText
-import kotlinx.coroutines.delay
+import com.selincengiz.ritmo.presentation.player.components.Player
 
-@kotlin.OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun PlayerScreen(
@@ -78,77 +63,9 @@ fun PlayerScreen(
     event: (PlayerEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    val exoPlayer = ExoPlayer.Builder(context).build()
+
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
-
-    LaunchedEffect(state.track?.preview) {
-        val mediaItem = MediaItem.fromUri(state.track?.preview ?: "")
-        exoPlayer.addMediaItem(mediaItem)
-    }
-    exoPlayer.prepare()
-    exoPlayer.playWhenReady = true
-    exoPlayer.play()
-
-    val isPlaying = remember {
-        mutableStateOf(false)
-    }
-
-    val currentPosition = remember {
-        mutableLongStateOf(0)
-    }
-
-    val sliderPosition = remember {
-        mutableLongStateOf(0)
-    }
-
-    val totalDuration = remember {
-        mutableLongStateOf(0)
-    }
-
-
-    LaunchedEffect(key1 = exoPlayer.currentPosition, key2 = exoPlayer.isPlaying) {
-        delay(1000)
-        currentPosition.longValue = exoPlayer.currentPosition
-    }
-
-    LaunchedEffect(currentPosition.longValue) {
-        sliderPosition.longValue = currentPosition.longValue
-    }
-
-    LaunchedEffect(exoPlayer.duration) {
-        if (exoPlayer.duration > 0) {
-            totalDuration.longValue = exoPlayer.duration
-        }
-    }
-    LocalLifecycleOwner.current.lifecycle.addObserver(object : LifecycleEventObserver {
-        override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-            when (event) {
-                Lifecycle.Event.ON_START -> {
-                    // Start playing when the Composable is in the foreground
-                    if (exoPlayer.isPlaying.not()) {
-                        exoPlayer.play()
-                    }
-                }
-
-                Lifecycle.Event.ON_STOP -> {
-                    // Pause the player when the Composable is in the background
-                    exoPlayer.pause()
-                }
-
-                else -> {
-                    // Nothing
-                }
-            }
-        }
-    })
-
-    // Manage lifecycle events
-    DisposableEffect(state.track?.preview) {
-        onDispose {
-            exoPlayer.release()
-        }
-    }
 
     Column(
         modifier = modifier
@@ -237,71 +154,10 @@ fun PlayerScreen(
             tint = Color.White
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
-        ) {
-            TrackSlider(
-                value = sliderPosition.longValue.toFloat(),
-                onValueChange = {
-                    sliderPosition.longValue = it.toLong()
-                },
-                onValueChangeFinished = {
-                    currentPosition.longValue = sliderPosition.longValue
-                    exoPlayer.seekTo(sliderPosition.longValue)
-                },
-                songDuration = totalDuration.longValue.toFloat()
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-
-                Text(
-                    text = (currentPosition.longValue).convertToText(),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp),
-                    color = Color.White,
-                    style = TextStyle(fontWeight = FontWeight.Bold)
-                )
-
-                val remainTime = totalDuration.longValue - currentPosition.longValue
-                Text(
-                    text = if (remainTime >= 0) remainTime.convertToText() else "",
-                    modifier = Modifier
-                        .padding(8.dp),
-                    color = Color.White,
-                    style = TextStyle(fontWeight = FontWeight.Bold)
-                )
-            }
+        state.track?.preview?.let {
+            Player(passedString = it)
         }
 
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ControlButton(icon = R.drawable.ic_previous, size = 40.dp, onClick = {
-                exoPlayer.seekToPreviousMediaItem()
-            })
-            Spacer(modifier = Modifier.width(20.dp))
-            ControlButton(
-                icon = if (isPlaying.value) R.drawable.ic_pause else R.drawable.ic_play,
-                size = 100.dp,
-                onClick = {
-                    if (isPlaying.value) {
-                        exoPlayer.pause()
-                    } else {
-                        exoPlayer.play()
-                    }
-                    isPlaying.value = exoPlayer.isPlaying
-                })
-            Spacer(modifier = Modifier.width(20.dp))
-            ControlButton(icon = R.drawable.ic_next, size = 40.dp, onClick = {
-                exoPlayer.seekToNextMediaItem()
-            })
-        }
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
