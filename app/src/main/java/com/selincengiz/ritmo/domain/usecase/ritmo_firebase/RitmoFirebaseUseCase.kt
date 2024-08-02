@@ -4,5 +4,6 @@ data class RitmoFirebaseUseCase(
     val addPlaylist: AddToPlaylist,
     val createPlaylist: CreatePlaylists,
     val getPlaylists: GetPlaylists,
-    val getPlaylist: GetPlaylist
+    val getPlaylist: GetPlaylist,
+    val deletePlaylist: DeletePlaylist
 )

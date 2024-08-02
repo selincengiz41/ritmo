@@ -7,4 +7,6 @@ sealed class PlayerEvent {
     data object InsertDeleteTrack : PlayerEvent()
     data object GetPlaylists:PlayerEvent()
     data class AddToPlaylist(val playlistId: String) : PlayerEvent()
+    data class DeletePlaylist(val id: String) : PlayerEvent()
+
 }

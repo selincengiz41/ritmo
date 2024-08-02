@@ -26,7 +26,6 @@ class ProfileViewModel @Inject constructor(
             _state.value = state.value.copy(image = it)
         }
         getPlaylists()
-      //  Log.i("getPlaylists", _state.value.playlists.get(0)?.name.toString())
     }
 
     fun onEvent(event: ProfileEvent) {
@@ -41,6 +40,12 @@ class ProfileViewModel @Inject constructor(
 
             is ProfileEvent.CreatePlayList -> {
                 createPlayList(event.name)
+                getPlaylists()
+            }
+
+            is ProfileEvent.DeletePlaylist -> {
+                ritmoFirebaseUseCase.deletePlaylist(event.id)
+                getPlaylists()
             }
         }
     }

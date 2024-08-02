@@ -93,7 +93,7 @@ fun ProfileImagePicker(
                 },
             model = state.image,
             placeholder = painterResource(id = R.drawable.placeholder),
-            error = painterResource(id = R.drawable.ic_pause),
+            error = painterResource(id = R.drawable.placeholder),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             onError = {Log.i("aut", it.result.throwable.message ?: "") }

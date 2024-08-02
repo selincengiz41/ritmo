@@ -65,6 +65,7 @@ import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.common.Playlist
 import com.selincengiz.ritmo.presentation.player.components.ControlButton
 import com.selincengiz.ritmo.presentation.player.components.TrackSlider
+import com.selincengiz.ritmo.presentation.profile.ProfileEvent
 import com.selincengiz.ritmo.util.Extensions.convertToText
 import kotlinx.coroutines.delay
 
@@ -325,6 +326,9 @@ fun PlayerScreen(
                                     onClick = {
                                         event(PlayerEvent.AddToPlaylist(playlist.id))
                                         showBottomSheet = false
+                                    },
+                                    onDelete = {
+                                        event(PlayerEvent.DeletePlaylist(playlist.id))
                                     }
                                 )
                             }

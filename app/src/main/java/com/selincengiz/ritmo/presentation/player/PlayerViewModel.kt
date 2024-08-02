@@ -38,6 +38,11 @@ class PlayerViewModel @Inject constructor(
             is PlayerEvent.AddToPlaylist -> {
                 addToPlaylist(event.playlistId)
             }
+
+            is PlayerEvent.DeletePlaylist ->{
+                ritmoFirebaseUseCase.deletePlaylist(event.id)
+                getPlaylists()
+            }
         }
     }
 

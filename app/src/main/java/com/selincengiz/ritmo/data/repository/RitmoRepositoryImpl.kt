@@ -70,7 +70,6 @@ class RitmoRepositoryImpl(
         return null
     }
 
-    //TODO:Firebase live okuma yok
     override suspend fun getPlaylists(): List<PlaylistUI?> {
         val playlistsRef = firestore
             .collection("users")
@@ -109,6 +108,15 @@ class RitmoRepositoryImpl(
             }.addOnFailureListener { e ->
                 println("Error adding playlist: $e")
             }
+    }
+
+    override fun deletePlaylist(id: String) {
+        firestore
+            .collection("users")
+            .document(auth.currentUser!!.uid)
+            .collection("playlists")
+            .document(id)
+            .delete()
     }
 
     override suspend fun addTrackToPlaylist(playlistId: String, track: TrackUI) {

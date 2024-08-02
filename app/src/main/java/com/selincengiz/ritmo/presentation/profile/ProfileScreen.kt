@@ -118,7 +118,9 @@ fun ProfileScreen(
                         it[item]?.let { playlist ->
                             Playlist(
                                 playlistUI = playlist,
-                                onClick = { navigateToDetail(playlist.id) })
+                                onClick = { navigateToDetail(playlist.id) },
+                                onDelete = { event(ProfileEvent.DeletePlaylist(playlist.id)) }
+                            )
                         }
                     }
                 }
