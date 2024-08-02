@@ -3,14 +3,17 @@ package com.selincengiz.ritmo.presentation.player.components
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -32,7 +35,7 @@ import androidx.media3.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
 
 @Composable
 @androidx.annotation.OptIn(UnstableApi::class)
-fun Player(passedString: String) {
+fun Player(modifier: Modifier = Modifier, passedString: String) {
     val context = LocalContext.current
     var player: Player? by remember {
         mutableStateOf(null)
@@ -84,7 +87,8 @@ fun Player(passedString: String) {
     }
 
     AndroidView(
-        factory = { playerView }
+        factory = { playerView },
+        modifier = modifier
     )
 }
 

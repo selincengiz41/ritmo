@@ -155,7 +155,12 @@ fun PlayerScreen(
         )
 
         state.track?.preview?.let {
-            Player(passedString = it)
+            Player(
+                passedString = it,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
         }
 
         if (showBottomSheet) {
