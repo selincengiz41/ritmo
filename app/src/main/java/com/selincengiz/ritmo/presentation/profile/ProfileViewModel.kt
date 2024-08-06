@@ -25,6 +25,9 @@ class ProfileViewModel @Inject constructor(
         auth.currentUser?.photoUrl?.let {
             _state.value = state.value.copy(image = it)
         }
+        auth.currentUser?.displayName?.let {
+            _state.value = state.value.copy(name = it)
+        }
         getPlaylists()
     }
 

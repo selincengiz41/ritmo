@@ -2,7 +2,7 @@ package com.selincengiz.ritmo.presentation.profile
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.border
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,8 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
@@ -31,23 +32,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.Dimens.SmallPadding
-import com.selincengiz.ritmo.presentation.common.GlowingCard
 import com.selincengiz.ritmo.presentation.common.Playlist
 import com.selincengiz.ritmo.presentation.profile.components.PlaylistDialog
 import com.selincengiz.ritmo.presentation.profile.components.ProfileImagePicker
-import com.selincengiz.ritmo.ui.theme.BlueButtonColor
-import com.selincengiz.ritmo.ui.theme.PurpleButtonColor
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
@@ -75,14 +71,52 @@ fun ProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 16.dp)
+            .statusBarsPadding()
 
     ) {
         Column(
             modifier = modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfileImagePicker(event = event, state = state)
-            Spacer(modifier = Modifier.height(SmallPadding))
+
+            Icon(
+                modifier = Modifier
+                    .clickable {
+                        event(ProfileEvent.Logout)
+                        navigateToLogin()
+                    }
+                    .align(Alignment.End)
+                    .padding(end = 15.dp),
+                painter = painterResource(id = R.drawable.ic_logout),
+                contentDescription = "logout",
+                tint = Color.White
+            )
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(start = 20.dp)
+            ) {
+                ProfileImagePicker(event = event, state = state)
+                Spacer(modifier = Modifier.width(MediumPadding1))
+                Text(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    text = state.name ?: "",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontSize = 24.sp,
+                    color = Color.White
+                )
+            }
+            Canvas(modifier = Modifier.fillMaxWidth()) {
+                drawLine(
+                    color = Color.Gray,
+                    start = Offset(0f, 0f),
+                    end = Offset(Float.MAX_VALUE, 0f),
+                    strokeWidth = 2f
+                )
+            }
+            Spacer(modifier = Modifier.height(MediumPadding1))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -125,37 +159,8 @@ fun ProfileScreen(
                     }
                 }
             }
+        }
 
-        }
-        GlowingCard(
-            onClick = {
-                event(ProfileEvent.Logout)
-                navigateToLogin()
-            },
-            glowingColor = BlueButtonColor,
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .height(42.dp)
-                .border(
-                    width = 2.dp,
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(BlueButtonColor, PurpleButtonColor)
-                    ),
-                    shape = RoundedCornerShape(25.dp)
-                ),
-            cornersRadius = Int.MAX_VALUE.dp
-        ) {
-            Text(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp),
-                textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.logout),
-                color = colorResource(id = R.color.white)
-            )
-        }
         SnackbarHost(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -169,5 +174,4 @@ fun ProfileScreen(
             })
         }
     }
-
 }

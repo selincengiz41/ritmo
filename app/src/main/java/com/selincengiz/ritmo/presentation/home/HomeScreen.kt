@@ -47,28 +47,7 @@ fun HomeScreen(
                     .padding(top = MediumPadding1)
                     .statusBarsPadding()
             ) {
-                Spacer(modifier = Modifier.height(ExtraSmallPadding2))
 
-                Row(
-                    modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        modifier = Modifier.padding(start = MediumPadding1),
-                        text = "Ritmo",
-                        fontSize = 14.sp,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.White,
-                    )
-
-                    Icon(
-                        imageVector = Icons.Default.Notifications,
-                        contentDescription = "notifications",
-                        tint = Color.White
-                    )
-                }
                 Spacer(modifier = Modifier.height(MediumPadding1))
                 Text(
                     modifier = Modifier.padding(start = MediumPadding1),

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,15 +69,12 @@ fun ProfileImagePicker(
 
     Column(
         modifier = modifier
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(vertical = 32.dp),
     ) {
         AsyncImage(
             modifier = Modifier
-                .size(200.dp)
-                .padding(16.dp)
-                .clip(CircleShape)
+                .size(90.dp)
+                .clip(RoundedCornerShape(5.dp))
                 .clickable {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         // For Android 14+, handle the new selected photo access permission
