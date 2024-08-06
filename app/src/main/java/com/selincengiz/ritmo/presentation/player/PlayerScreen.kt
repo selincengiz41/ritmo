@@ -1,6 +1,7 @@
 package com.selincengiz.ritmo.presentation.player
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.selincengiz.ritmo.MediaDownloadService
 import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
@@ -95,6 +97,12 @@ fun PlayerScreen(
             )
             Spacer(modifier = Modifier.width(35.dp))
             Icon(
+                modifier = Modifier.clickable {
+                    val serviceIntent = Intent(context, MediaDownloadService::class.java)
+                    MediaDownloadService.startService(context, serviceIntent)
+                    val mediaUri = Uri.parse(state.track?.preview ?: "")
+                    MediaDownloadService.startDownload(context, mediaUri)
+                },
                 painter = painterResource(id = R.drawable.ic_download),
                 contentDescription = "Download",
                 tint = Color.White
@@ -118,6 +126,7 @@ fun PlayerScreen(
                 .size(345.dp),
             model = ImageRequest.Builder(context).data(state.track?.album?.coverMedium).build(),
             placeholder = painterResource(id = R.drawable.placeholder),
+            error = painterResource(id = R.drawable.placeholder),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )

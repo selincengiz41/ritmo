@@ -5,4 +5,8 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="logout">Log out</string>
+    <string name="download_notification_title">Download starting</string>
+    <string name="download_notification_text">Download...</string>
+    <string name="download_notification_channel_name">Channel</string>
+    <string name="download_notification_channel_description">Channel Desc.</string>
 </resources>

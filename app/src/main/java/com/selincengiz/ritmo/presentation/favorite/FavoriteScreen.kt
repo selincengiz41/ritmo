@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.Dimens
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
@@ -26,7 +27,7 @@ import com.selincengiz.ritmo.presentation.common.ListedRitmo
 fun FavoriteScreen(
     modifier: Modifier = Modifier,
     state: FavoriteState,
-    navigateToPlayer: (String) -> Unit
+    navigateToPlayer: (TrackUI) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -58,7 +59,7 @@ fun FavoriteScreen(
                     state.favoriteRitmo[it]?.let { track ->
                         ListedRitmo(
                             trackUI = track,
-                            onClick = { navigateToPlayer(track.id ?: "") })
+                            onClick = { navigateToPlayer(track) })
                     }
                 }
             }

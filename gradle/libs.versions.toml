@@ -29,6 +29,7 @@ roomCompiler = "2.6.1"
 roomRuntime = "2.6.1"
 googleServices = "4.4.2"
 firebaseBom = "33.1.2"
+media3DatasourceOkhttp = "1.4.0"
 
 
 
@@ -78,6 +79,7 @@ firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+androidx-media3-datasource-okhttp = { group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3DatasourceOkhttp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

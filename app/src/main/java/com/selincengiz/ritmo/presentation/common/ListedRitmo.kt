@@ -44,6 +44,7 @@ fun ListedRitmo(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: () -> 
                 .size(height = 82.dp, width = 84.dp),
             model = ImageRequest.Builder(context).data(trackUI.album?.coverMedium).build(),
             placeholder = painterResource(id = R.drawable.placeholder),
+            error =painterResource(id = R.drawable.placeholder) ,
             contentDescription = null,
             contentScale = ContentScale.Crop
         )

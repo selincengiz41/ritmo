@@ -3,7 +3,6 @@ package com.selincengiz.ritmo.presentation.player.components
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -13,7 +12,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -32,6 +30,7 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
+import com.selincengiz.ritmo.util.DownloadUtil.cacheDataSourceFactory
 
 @Composable
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -117,6 +116,7 @@ fun ComposableLifecycle(
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 fun initPlayer(context: Context, passedString: String): Player {
+
     return ExoPlayer.Builder(context).build().apply {
         val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
         val uri =
@@ -134,6 +134,7 @@ fun buildMediaSource(
     defaultHttpDataSourceFactory: DefaultHttpDataSource.Factory,
 ): MediaSource {
     val type = Util.inferContentType(uri)
+
     return when (type) {
         C.CONTENT_TYPE_DASH -> DashMediaSource.Factory(defaultHttpDataSourceFactory)
             .createMediaSource(MediaItem.fromUri(uri))
@@ -144,7 +145,7 @@ fun buildMediaSource(
         C.CONTENT_TYPE_HLS -> HlsMediaSource.Factory(defaultHttpDataSourceFactory)
             .createMediaSource(MediaItem.fromUri(uri))
 
-        C.CONTENT_TYPE_OTHER -> ProgressiveMediaSource.Factory(defaultHttpDataSourceFactory)
+        C.CONTENT_TYPE_OTHER -> ProgressiveMediaSource.Factory(cacheDataSourceFactory!!)
             .createMediaSource(MediaItem.fromUri(uri))
 
         else -> {

@@ -11,11 +11,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.selincengiz.ritmo.presentation.main.components.NavGraph
 import com.selincengiz.ritmo.ui.theme.RitmoTheme
+import com.selincengiz.ritmo.util.DownloadUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,8 +44,10 @@ class MainActivity : ComponentActivity() {
                 }
                 Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background))
                 {
+                    val context = LocalContext.current
                     val startDesination = viewModel.startDestination
                     NavGraph(startDestination = startDesination, mainEvent = viewModel::onEvent)
+                    DownloadUtil.getDownloadManager(context)
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.selincengiz.ritmo.presentation.navigator
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,13 +13,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.selincengiz.ritmo.ConnectivityHelper
 import com.selincengiz.ritmo.R
+import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.detail.DetailScreen
 import com.selincengiz.ritmo.presentation.detail.DetailViewModel
 import com.selincengiz.ritmo.presentation.detail.DetailsEvent
@@ -175,27 +179,51 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
 
             composable(route = Route.PlayerScreen.route) {
                 val viewModel: PlayerViewModel = hiltViewModel()
-                navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
-                    ?.let { id ->
-                        viewModel.onEvent(PlayerEvent.GetTrack(id))
-                        PlayerScreen(
-                            state = viewModel.state.value,
-                            event = viewModel::onEvent,
-                        )
-                    }
-            }
+                val track =
+                    navController.previousBackStackEntry?.savedStateHandle?.get<TrackUI?>("track")
+                if (track != null) {
+                    viewModel.onEvent(PlayerEvent.UpdateTrack(track))
+                    Log.i("player",viewModel.state.value.track?.title.toString())
+                    PlayerScreen(
+                        state = viewModel.state.value,
+                        event = viewModel::onEvent,
+                    )
 
+                } else {
+                    val id =
+                        navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
+                    viewModel.onEvent(PlayerEvent.GetTrack(id ?: ""))
+                    PlayerScreen(
+                        state = viewModel.state.value,
+                        event = viewModel::onEvent,
+                    )
+                }
+
+
+            }
+//TODO:FAVORİTES VE NORMALDE BUG VAR
             composable(route = Route.FavoriteScreen.route) {
+                val context = LocalContext.current
                 val viewModel: FavoriteViewModel = hiltViewModel()
                 val state = viewModel.state.value
                 FavoriteScreen(
                     state = state,
-                    navigateToPlayer = { id ->
-                        navigateToArgs(
-                            navController = navController,
-                            id = id,
-                            route = Route.PlayerScreen.route
-                        )
+                    navigateToPlayer = { track ->
+                        val isConnected = ConnectivityHelper.isOnline(context)
+                        if (isConnected) {
+                            navigateToArgs(
+                                navController = navController,
+                                id = track.id ?: "",
+                                route = Route.PlayerScreen.route
+                            )
+                        } else {
+
+                            navigateToDownloads(
+                                navController = navController,
+                                track = track,
+                                route = Route.PlayerScreen.route
+                            )
+                        }
                     }
                 )
             }
@@ -235,4 +263,9 @@ private fun navigateToArgs(navController: NavController, id: String, route: Stri
     navController.currentBackStackEntry?.savedStateHandle?.set("id", id)
     navController.navigate(route = route) {
     }
+}
+
+private fun navigateToDownloads(navController: NavController, track: TrackUI, route: String) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("track", track)
+    navController.navigate(route = route)
 }
