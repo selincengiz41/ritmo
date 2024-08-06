@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.selincengiz.ritmo.data.local.DownloadDao
 import com.selincengiz.ritmo.data.local.RitmoDao
 import com.selincengiz.ritmo.data.local.RitmoDatabase
 import com.selincengiz.ritmo.data.local.RitmoTypeConverter
@@ -61,10 +62,12 @@ object AppModule {
         ritmoApi: RitmoApi,
         ritmoDao: RitmoDao,
         firestore: FirebaseFirestore,
-        auth: FirebaseAuth
+        auth: FirebaseAuth,
+        ritmoDaoDownloaded: DownloadDao
     ): RitmoRepository = RitmoRepositoryImpl(
         api = ritmoApi,
         dao = ritmoDao,
+        daoDownloaded = ritmoDaoDownloaded,
         firestore = firestore,
         auth = auth
     )

@@ -2,6 +2,7 @@ package com.selincengiz.ritmo.di
 
 import android.content.Context
 import androidx.room.Room
+import com.selincengiz.ritmo.data.local.DownloadDao
 import com.selincengiz.ritmo.data.local.RitmoDao
 import com.selincengiz.ritmo.data.local.RitmoDatabase
 import com.selincengiz.ritmo.data.local.RitmoTypeConverter
@@ -35,4 +36,10 @@ object DatabaseModule {
     fun provideRitmoDao(
         ritmoDatabase: RitmoDatabase
     ): RitmoDao = ritmoDatabase.ritmoDao
+
+    @Provides
+    @Singleton
+    fun provideDownloadDao(
+        ritmoDatabase: RitmoDatabase
+    ): DownloadDao = ritmoDatabase.downloadedSongDao
 }

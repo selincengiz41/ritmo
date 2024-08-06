@@ -36,4 +36,9 @@ interface RitmoRepository {
     fun deletePlaylist(id: String)
 
     suspend fun addTrackToPlaylist(playlistId: String, track: TrackUI)
+
+    suspend fun insertDownloaded(id: String)
+
+    suspend fun getDownloaded(): List<String>
+
 }

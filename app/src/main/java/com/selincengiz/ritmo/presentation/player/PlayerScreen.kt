@@ -3,6 +3,7 @@ package com.selincengiz.ritmo.presentation.player
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -98,12 +99,18 @@ fun PlayerScreen(
             Spacer(modifier = Modifier.width(35.dp))
             Icon(
                 modifier = Modifier.clickable {
-                    val serviceIntent = Intent(context, MediaDownloadService::class.java)
-                    MediaDownloadService.startService(context, serviceIntent)
-                    val mediaUri = Uri.parse(state.track?.preview ?: "")
-                    MediaDownloadService.startDownload(context, mediaUri)
+                    if (state.isDownloaded != true) {
+                        val serviceIntent = Intent(context, MediaDownloadService::class.java)
+                        MediaDownloadService.startService(context, serviceIntent)
+                        val mediaUri = Uri.parse(state.track?.preview ?: "")
+                        MediaDownloadService.startDownload(context, mediaUri) {
+                            event(PlayerEvent.Download(state.track?.id ?: ""))
+                        }
+                    }
                 },
-                painter = painterResource(id = R.drawable.ic_download),
+                painter = if (state.isDownloaded == true) painterResource(id = R.drawable.ic_downloaded) else painterResource(
+                    id = R.drawable.ic_download
+                ),
                 contentDescription = "Download",
                 tint = Color.White
             )

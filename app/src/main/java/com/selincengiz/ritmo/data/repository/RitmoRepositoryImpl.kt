@@ -3,7 +3,9 @@ package com.selincengiz.ritmo.data.repository
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.selincengiz.ritmo.data.local.DownloadDao
 import com.selincengiz.ritmo.data.local.RitmoDao
+import com.selincengiz.ritmo.data.local.entities.DownloadedSong
 import com.selincengiz.ritmo.data.mapper.Mappers.toAlbumUI
 import com.selincengiz.ritmo.data.mapper.Mappers.toPlaylistUI
 import com.selincengiz.ritmo.data.mapper.Mappers.toTrackEntity
@@ -21,6 +23,7 @@ import kotlinx.coroutines.tasks.await
 class RitmoRepositoryImpl(
     private val api: RitmoApi,
     private val dao: RitmoDao,
+    private val daoDownloaded: DownloadDao,
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : RitmoRepository {
@@ -138,4 +141,11 @@ class RitmoRepositoryImpl(
         }
     }
 
+    override suspend fun insertDownloaded(id: String) {
+        daoDownloaded.insert(DownloadedSong(songId = id))
+    }
+
+    override suspend fun getDownloaded(): List<String> {
+        return daoDownloaded.getAllDownloadedSongs().map { it.songId }
+    }
 }

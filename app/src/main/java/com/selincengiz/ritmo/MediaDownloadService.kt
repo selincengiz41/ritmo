@@ -34,8 +34,7 @@ class MediaDownloadService : DownloadService(
 
     override fun onCreate() {
         super.onCreate()
-        Log.i("Notification", "Service onCreate called")
-
+//TODO:Notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -47,31 +46,15 @@ class MediaDownloadService : DownloadService(
                 description = getString(R.string.download_notification_channel_description)
             }
             notificationManager.createNotificationChannel(channel)
-            Log.i("Notification", "Notification channel created")
         }
 
         val notification = getForegroundNotification(emptyList(), 0)
         startForeground(FOREGROUND_NOTIFICATION_ID, notification)
-        Log.i("Notification", "Foreground notification started")
     }
 
     override fun getDownloadManager(): DownloadManager {
         downloadManager = DownloadUtil.getDownloadManager(this)
-        downloadManager.addListener(object : DownloadManager.Listener {
-            override fun onDownloadChanged(
-                downloadManager: DownloadManager,
-                download: Download,
-                finalException: Exception?
-            ) {
-                Log.i("listener percent", download.percentDownloaded.toString())
-                Log.i("listener state ", download.state.toString())
-                Log.i("listener uri ", download.request.uri.toString())
-                Log.i("listener exception", finalException?.message.toString())
 
-                val notification = getForegroundNotification(listOf(download), 0)
-                startForeground(FOREGROUND_NOTIFICATION_ID, notification)
-            }
-        })
         return downloadManager
     }
 
@@ -105,7 +88,6 @@ class MediaDownloadService : DownloadService(
         return builder.build()
     }
 
-
     companion object {
         const val FOREGROUND_NOTIFICATION_ID = 1
         const val DOWNLOAD_NOTIFICATION_CHANNEL_ID = "download_channel"
@@ -115,10 +97,10 @@ class MediaDownloadService : DownloadService(
             Util.startForegroundService(context, intent)
         }
 
-
         fun startDownload(
             context: Context,
             mediaUri: Uri,
+            finished: () -> Unit
         ) {
             val downloadRequest = DownloadRequest.Builder(mediaUri.toString(), mediaUri).build()
             sendAddDownload(
@@ -127,7 +109,18 @@ class MediaDownloadService : DownloadService(
                 downloadRequest,
                 true
             )
-        }
+            DownloadUtil.getDownloadManager(context).addListener(object : DownloadManager.Listener {
+                override fun onDownloadChanged(
+                    downloadManager: DownloadManager,
+                    download: Download,
+                    finalException: Exception?
+                ) {
+                    if(download.state == Download.STATE_COMPLETED){
+                        finished()
+                    }
+                }
+            })
 
+        }
     }
 }

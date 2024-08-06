@@ -10,4 +10,5 @@ sealed class PlayerEvent {
     data class AddToPlaylist(val playlistId: String) : PlayerEvent()
     data class DeletePlaylist(val id: String) : PlayerEvent()
     data class UpdateTrack(val track: TrackUI) : PlayerEvent()
+    data class Download(val id: String) : PlayerEvent()
 }

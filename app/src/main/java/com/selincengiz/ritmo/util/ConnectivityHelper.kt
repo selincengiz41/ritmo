@@ -1,4 +1,4 @@
-package com.selincengiz.ritmo
+package com.selincengiz.ritmo.util
 
 import android.content.Context
 import android.net.ConnectivityManager

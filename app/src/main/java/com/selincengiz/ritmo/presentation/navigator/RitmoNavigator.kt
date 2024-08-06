@@ -1,7 +1,6 @@
 package com.selincengiz.ritmo.presentation.navigator
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,7 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.selincengiz.ritmo.ConnectivityHelper
+import com.selincengiz.ritmo.util.ConnectivityHelper
 import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.detail.DetailScreen
@@ -183,12 +182,10 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                     navController.previousBackStackEntry?.savedStateHandle?.get<TrackUI?>("track")
                 if (track != null) {
                     viewModel.onEvent(PlayerEvent.UpdateTrack(track))
-                    Log.i("player",viewModel.state.value.track?.title.toString())
                     PlayerScreen(
                         state = viewModel.state.value,
                         event = viewModel::onEvent,
                     )
-
                 } else {
                     val id =
                         navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
@@ -198,10 +195,8 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                         event = viewModel::onEvent,
                     )
                 }
-
-
             }
-//TODO:FAVORİTES VE NORMALDE BUG VAR
+
             composable(route = Route.FavoriteScreen.route) {
                 val context = LocalContext.current
                 val viewModel: FavoriteViewModel = hiltViewModel()
@@ -217,7 +212,6 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                                 route = Route.PlayerScreen.route
                             )
                         } else {
-
                             navigateToDownloads(
                                 navController = navController,
                                 track = track,

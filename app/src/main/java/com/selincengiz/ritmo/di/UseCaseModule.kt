@@ -9,6 +9,9 @@ import com.selincengiz.ritmo.domain.usecase.ritmo.GetAlbum
 import com.selincengiz.ritmo.domain.usecase.ritmo.GetTrack
 import com.selincengiz.ritmo.domain.usecase.ritmo.RitmoUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo.Search
+import com.selincengiz.ritmo.domain.usecase.ritmo_download.GetDownloaded
+import com.selincengiz.ritmo.domain.usecase.ritmo_download.InsertDownloaded
+import com.selincengiz.ritmo.domain.usecase.ritmo_download.RitmoDownloadUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.AddToPlaylist
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.CreatePlaylists
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.DeletePlaylist
@@ -70,5 +73,14 @@ object UseCaseModule {
         addPlaylist = AddToPlaylist(ritmoRepository),
         getPlaylist = GetPlaylist(ritmoRepository),
         deletePlaylist = DeletePlaylist(ritmoRepository)
+    )
+
+    @Provides
+    @Singleton
+    fun provideRitmoDownloadUseCase(
+        ritmoRepository: RitmoRepository
+    ) = RitmoDownloadUseCase(
+        insertDownloaded = InsertDownloaded(ritmoRepository),
+        getDownloaded = GetDownloaded(ritmoRepository)
     )
 }
