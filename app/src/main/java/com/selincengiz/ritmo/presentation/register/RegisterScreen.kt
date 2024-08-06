@@ -1,4 +1,4 @@
-package com.selincengiz.ritmo.presentation.login
+package com.selincengiz.ritmo.presentation.register
 
 
 import androidx.compose.foundation.border
@@ -43,27 +43,28 @@ import com.selincengiz.ritmo.ui.theme.BlueButtonColor
 import com.selincengiz.ritmo.ui.theme.PurpleButtonColor
 
 @Composable
-fun LoginScreen(
-    loginState: LoginState,
-    event: (LoginEvent) -> Unit,
+fun RegisterScreen(
+    registerState: RegisterState,
+    event: (RegisterEvent) -> Unit,
     navigateToHome: () -> Unit,
-    navigateToRegister: () -> Unit
+    navigateToLogin: () -> Unit
 ) {
-    var userName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(loginState) {
-        when (loginState) {
-            is LoginState.Error -> {
+    LaunchedEffect(registerState) {
+        when (registerState) {
+            is RegisterState.Error -> {
                 snackbarHostState.showSnackbar(
-                    loginState.throwable,
+                    registerState.throwable,
                     duration = SnackbarDuration.Short,
                     withDismissAction = true
                 )
             }
 
-            is LoginState.Success -> {
+            is RegisterState.Success -> {
                 snackbarHostState.showSnackbar(
                     "Success",
                     duration = SnackbarDuration.Short,
@@ -93,7 +94,7 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = stringResource(id = R.string.login_title),
+                text = stringResource(id = R.string.register_title),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
@@ -104,8 +105,27 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedTextField(
-                value = userName,
-                onValueChange = { userName = it },
+                value = name,
+                onValueChange = { name = it },
+                label = {
+                    Text(
+                        stringResource(id = R.string.name),
+                        color = colorResource(id = R.color.white),
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
+                    )
+                }, modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedTextColor = Color.White,
+                    focusedTextColor = colorResource(id = R.color.white),
+                    focusedBorderColor = colorResource(id = R.color.white),
+                    unfocusedBorderColor = Color.Gray
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
                 label = {
                     Text(
                         stringResource(id = R.string.email),
@@ -144,7 +164,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(32.dp))
             GlowingCard(
                 onClick = {
-                    event(LoginEvent.Login(userName, password))
+                    event(RegisterEvent.Register(name, email, password))
                 },
                 glowingColor = BlueButtonColor,
                 modifier = Modifier
@@ -165,17 +185,16 @@ fun LoginScreen(
                         .fillMaxSize()
                         .padding(10.dp),
                     textAlign = TextAlign.Center,
-                    text = stringResource(id = R.string.login),
+                    text = stringResource(id = R.string.register),
                     color = colorResource(id = R.color.white)
                 )
             }
-
             Text(
                 modifier = Modifier
                     .padding(10.dp)
-                    .clickable { navigateToRegister() },
+                    .clickable { navigateToLogin() },
                 textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.go_register),
+                text = stringResource(id = R.string.go_login),
                 color = colorResource(id = R.color.white)
             )
         }
@@ -190,8 +209,8 @@ fun LoginScreen(
 
 @Preview
 @Composable
-private fun LoginScreenPrev() {
-    LoginScreen(loginState = LoginState.Entry, event = {}, navigateToHome = {}){
+private fun RegisterScreenPrev() {
+    RegisterScreen(registerState = RegisterState.Entry, event = {}, navigateToHome = {}) {
 
     }
 }

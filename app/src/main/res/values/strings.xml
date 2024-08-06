@@ -1,9 +1,14 @@
 <resources>
     <string name="app_name">Ritmo</string>
     <string name="login_title">Welcome back! Glad to see you, Again!</string>
+    <string name="register_title">Welcome to Ritmo! Create Your Account</string>
+    <string name="go_register">Dont have an account? Register</string>
+    <string name="go_login">Already have an account? Login</string>
     <string name="email">Email</string>
+    <string name="name">Name</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="register">Register</string>
     <string name="logout">Log out</string>
     <string name="download_notification_title">Download starting</string>
     <string name="download_notification_text">Download...</string>

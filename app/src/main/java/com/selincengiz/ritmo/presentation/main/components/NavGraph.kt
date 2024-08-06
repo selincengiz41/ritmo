@@ -2,6 +2,7 @@ package com.selincengiz.ritmo.presentation.main.components
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,6 +13,8 @@ import com.selincengiz.ritmo.presentation.main.MainEvent
 import com.selincengiz.ritmo.presentation.navigator.RitmoNavigator
 import com.selincengiz.ritmo.presentation.onboarding.OnBoardingScreen
 import com.selincengiz.ritmo.presentation.onboarding.OnBoardingViewModel
+import com.selincengiz.ritmo.presentation.register.RegisterScreen
+import com.selincengiz.ritmo.presentation.register.RegisterViewModel
 
 @Composable
 fun NavGraph(
@@ -53,9 +56,43 @@ fun NavGraph(
                 LoginScreen(
                     loginState = viewModel.state.value,
                     event = viewModel::onEvent,
-                    navigateToHome = { mainEvent(MainEvent.Auth) }
+                    navigateToHome = { mainEvent(MainEvent.Auth) },
+                    navigateToRegister = {
+                        navigateToTap(
+                            navController = navController,
+                            route = Route.RegisterScreen.route
+                        )
+                    }
                 )
             }
+            composable(
+                route = Route.RegisterScreen.route
+            ) {
+                val viewModel: RegisterViewModel = hiltViewModel()
+                RegisterScreen(
+                    registerState = viewModel.state.value,
+                    event = viewModel::onEvent,
+                    navigateToHome = { mainEvent(MainEvent.Auth) },
+                    navigateToLogin = {
+                        navigateToTap(
+                            navController = navController,
+                            route = Route.LoginScreen.route
+                        )
+                    }
+                )
+            }
+        }
+    }
+}
+
+private fun navigateToTap(navController: NavController, route: String) {
+    navController.navigate(route) {
+        navController.graph.startDestinationRoute?.let { homeScreen ->
+            popUpTo(homeScreen) {
+                saveState = true
+            }
+            restoreState = true
+            launchSingleTop = true
         }
     }
 }

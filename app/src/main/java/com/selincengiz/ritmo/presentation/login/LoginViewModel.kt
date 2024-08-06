@@ -18,8 +18,8 @@ class LoginViewModel @Inject constructor(
     fun onEvent(event: LoginEvent) {
         when (event) {
             is LoginEvent.Login -> {
-                if (!event.name.isNullOrBlank() && !event.password.isNullOrBlank()) {
-                    auth.signInWithEmailAndPassword(event.name, event.password)
+                if (!event.email.isNullOrBlank() && !event.password.isNullOrBlank()) {
+                    auth.signInWithEmailAndPassword(event.email, event.password)
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
                                 _state.value = LoginState.Success
