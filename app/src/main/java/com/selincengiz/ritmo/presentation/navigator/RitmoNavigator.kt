@@ -1,6 +1,7 @@
 package com.selincengiz.ritmo.presentation.navigator
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -54,6 +55,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
     }
 
     val navController = rememberNavController()
+
     val backstackState = navController.currentBackStackEntryAsState().value
     var selectedItem by rememberSaveable {
         mutableIntStateOf(0)
@@ -108,7 +110,6 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                     }
                 )
             }
-
         }
     ) {
         val bottomPadding = it.calculateBottomPadding()
@@ -183,19 +184,25 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                     navController.previousBackStackEntry?.savedStateHandle?.get<TrackUI?>("track")
                 if (track != null) {
                     viewModel.onEvent(PlayerEvent.UpdateTrack(track))
-                    PlayerScreen(
-                        state = viewModel.state.value,
-                        event = viewModel::onEvent,
-                    )
                 } else {
                     val id =
                         navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
                     viewModel.onEvent(PlayerEvent.GetTrack(id ?: ""))
-                    PlayerScreen(
-                        state = viewModel.state.value,
-                        event = viewModel::onEvent,
-                    )
                 }
+                PlayerScreen(
+                    state = viewModel.state.value,
+                    event = viewModel::onEvent,
+                    navigateUp = {
+                        val wasNavigatedFromDownloads = navController.previousBackStackEntry?.savedStateHandle?.contains("track") ?: false
+                        if (wasNavigatedFromDownloads) {
+                            navController.navigate(Route.FavoriteScreen.route) {
+                                popUpTo(Route.PlayerScreen.route) {
+                                    inclusive = true
+                                }
+                            }
+                        }
+                    }
+                )
             }
 
             composable(route = Route.FavoriteScreen.route) {
@@ -254,10 +261,10 @@ private fun navigateToTap(navController: NavController, route: String) {
     }
 }
 
+
 private fun navigateToArgs(navController: NavController, id: String, route: String) {
     navController.currentBackStackEntry?.savedStateHandle?.set("id", id)
-    navController.navigate(route = route) {
-    }
+    navController.navigate(route = route)
 }
 
 private fun navigateToDownloads(navController: NavController, track: TrackUI, route: String) {

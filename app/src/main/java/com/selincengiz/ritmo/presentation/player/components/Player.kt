@@ -2,7 +2,6 @@ package com.selincengiz.ritmo.presentation.player.components
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -30,6 +29,7 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
+import com.selincengiz.ritmo.util.ConnectivityHelper
 import com.selincengiz.ritmo.util.DownloadUtil.cacheDataSourceFactory
 
 @Composable
@@ -47,38 +47,18 @@ fun Player(modifier: Modifier = Modifier, passedString: String) {
 
     ComposableLifecycle { _, event ->
         when (event) {
-            Lifecycle.Event.ON_START -> {
-                if (Build.VERSION.SDK_INT > 23) {
-                    player = initPlayer(context, passedString)
-                    playerView.onResume()
-                }
-            }
 
             Lifecycle.Event.ON_RESUME -> {
-                if (Build.VERSION.SDK_INT <= 23) {
                     player = initPlayer(context, passedString)
                     playerView.onResume()
-                }
             }
 
             Lifecycle.Event.ON_PAUSE -> {
-                if (Build.VERSION.SDK_INT <= 23) {
                     playerView.apply {
                         player?.release()
                         onPause()
                         player = null
                     }
-                }
-            }
-
-            Lifecycle.Event.ON_STOP -> {
-                if (Build.VERSION.SDK_INT > 23) {
-                    playerView.apply {
-                        player?.release()
-                        onPause()
-                        player = null
-                    }
-                }
             }
 
             else -> {}
@@ -97,16 +77,10 @@ fun ComposableLifecycle(
     onEvent: (LifecycleOwner, Lifecycle.Event) -> Unit,
 ) {
     DisposableEffect(lifecycleOwner) {
-        // 1. Create a LifecycleEventObserver to handle lifecycle events.
         val observer = LifecycleEventObserver { source, event ->
-            // 2. Call the provided onEvent callback with the source and event.
             onEvent(source, event)
         }
-
-        // 3. Add the observer to the lifecycle of the provided LifecycleOwner.
         lifecycleOwner.lifecycle.addObserver(observer)
-
-        // 4. Remove the observer when the composable is disposed.
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
@@ -116,12 +90,11 @@ fun ComposableLifecycle(
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 fun initPlayer(context: Context, passedString: String): Player {
-
     return ExoPlayer.Builder(context).build().apply {
         val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
         val uri =
             Uri.parse(passedString)
-        val mediaSource = buildMediaSource(uri, defaultHttpDataSourceFactory)
+        val mediaSource = buildMediaSource(uri, defaultHttpDataSourceFactory, context)
         setMediaSource(mediaSource)
         playWhenReady = true
         prepare()
@@ -132,6 +105,7 @@ fun initPlayer(context: Context, passedString: String): Player {
 fun buildMediaSource(
     uri: Uri,
     defaultHttpDataSourceFactory: DefaultHttpDataSource.Factory,
+    context: Context
 ): MediaSource {
     val type = Util.inferContentType(uri)
 
@@ -145,8 +119,11 @@ fun buildMediaSource(
         C.CONTENT_TYPE_HLS -> HlsMediaSource.Factory(defaultHttpDataSourceFactory)
             .createMediaSource(MediaItem.fromUri(uri))
 
-        C.CONTENT_TYPE_OTHER -> ProgressiveMediaSource.Factory(cacheDataSourceFactory!!)
-            .createMediaSource(MediaItem.fromUri(uri))
+        C.CONTENT_TYPE_OTHER -> {
+            val isOnline = ConnectivityHelper.isOnline(context = context)
+            ProgressiveMediaSource.Factory(if (isOnline) defaultHttpDataSourceFactory else cacheDataSourceFactory!!)
+                .createMediaSource(MediaItem.fromUri(uri))
+        }
 
         else -> {
             throw IllegalStateException("Unsupported type: $type")

@@ -13,16 +13,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val ritmoLocalUseCase: RitmoLocalUseCase
+    ritmoLocalUseCase: RitmoLocalUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(FavoriteState())
     val state: State<FavoriteState> = _state
 
     init {
-        ritmoLocalUseCase.getLocalTracks().onEach { tracks ->
-            _state.value = state.value.copy(favoriteRitmo = tracks)
-        }.launchIn(viewModelScope)
+            ritmoLocalUseCase.getLocalTracks().onEach { tracks ->
+                _state.value = state.value.copy(favoriteRitmo = tracks)
+            }.launchIn(viewModelScope)
     }
-
 }

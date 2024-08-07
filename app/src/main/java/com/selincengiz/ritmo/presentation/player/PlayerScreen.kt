@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -63,6 +64,7 @@ fun PlayerScreen(
     modifier: Modifier = Modifier,
     state: PlayerState,
     event: (PlayerEvent) -> Unit,
+    navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -82,6 +84,13 @@ fun PlayerScreen(
             horizontalArrangement = Arrangement.End
         ) {
             Icon(
+                modifier = Modifier.clickable { navigateUp() },
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "back",
+                tint = Color.White
+            )
+            Spacer(modifier = Modifier.width(35.dp))
+            Icon(
                 modifier = Modifier.clickable {
                     Intent(Intent.ACTION_SEND).also {
                         it.putExtra(Intent.EXTRA_TEXT, state.track?.link)
@@ -99,8 +108,6 @@ fun PlayerScreen(
             Icon(
                 modifier = Modifier.clickable {
                     if (state.isDownloaded != true) {
-                        val serviceIntent = Intent(context, MediaDownloadService::class.java)
-                        MediaDownloadService.startService(context, serviceIntent)
                         val mediaUri = Uri.parse(state.track?.preview ?: "")
                         MediaDownloadService.startDownload(context, mediaUri) {
                             event(PlayerEvent.Download(state.track?.id ?: ""))

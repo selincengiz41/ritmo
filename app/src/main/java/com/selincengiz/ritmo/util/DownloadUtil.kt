@@ -41,7 +41,7 @@ object DownloadUtil {
         val cache = getDownloadCache(context, databaseProvider)
         cacheDataSourceFactory = getDownloadCacheDataSource(cache)
         val downloadIndex = DefaultDownloadIndex(databaseProvider)
-        val executor = Executors.newFixedThreadPool(2)
+        val executor = Executors.newFixedThreadPool(4)
         val downloaderFactory = DefaultDownloaderFactory(cacheDataSourceFactory!!, executor)
         return DownloadManager(context, downloadIndex, downloaderFactory)
     }

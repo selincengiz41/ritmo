@@ -1,5 +1,7 @@
 package com.selincengiz.ritmo.presentation.main.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -16,6 +18,7 @@ import com.selincengiz.ritmo.presentation.onboarding.OnBoardingViewModel
 import com.selincengiz.ritmo.presentation.register.RegisterScreen
 import com.selincengiz.ritmo.presentation.register.RegisterViewModel
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun NavGraph(
     startDestination: String,

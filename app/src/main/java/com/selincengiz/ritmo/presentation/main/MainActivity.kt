@@ -1,9 +1,12 @@
 package com.selincengiz.ritmo.presentation.main
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -15,15 +18,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.selincengiz.ritmo.MediaDownloadService
 import com.selincengiz.ritmo.presentation.main.components.NavGraph
 import com.selincengiz.ritmo.ui.theme.RitmoTheme
-import com.selincengiz.ritmo.util.DownloadUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<MainViewModel>()
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -32,25 +36,29 @@ class MainActivity : ComponentActivity() {
                 viewModel.splashCondition
             }
         }
-        setContent {
-            RitmoTheme {
-                val isSystemInDarkMode = isSystemInDarkTheme()
-                val systemController = rememberSystemUiController()
-                SideEffect {
-                    systemController.setSystemBarsColor(
-                        color = Color.Transparent,
-                        darkIcons = !isSystemInDarkMode
-                    )
-                }
-                Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background))
-                {
-                    val context = LocalContext.current
-                    val startDesination = viewModel.startDestination
-                    NavGraph(startDestination = startDesination, mainEvent = viewModel::onEvent)
-                    DownloadUtil.getDownloadManager(context)
+            setContent {
+                RitmoTheme {
+                    val isSystemInDarkMode = isSystemInDarkTheme()
+                    val systemController = rememberSystemUiController()
+                    SideEffect {
+                        systemController.setSystemBarsColor(
+                            color = Color.Transparent,
+                            darkIcons = !isSystemInDarkMode
+                        )
+                    }
+                    Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background))
+                    {
+                        val context = LocalContext.current
+                        val startDesination = viewModel.startDestination
+                        NavGraph(startDestination = startDesination, mainEvent = viewModel::onEvent)
+                        val serviceIntent = Intent(context, MediaDownloadService::class.java)
+                        MediaDownloadService.startService(context, serviceIntent)
+                    }
                 }
             }
-        }
+
+
+
     }
 }
 

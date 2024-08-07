@@ -5,7 +5,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.domain.usecase.ritmo.RitmoUseCase
@@ -13,7 +12,6 @@ import com.selincengiz.ritmo.domain.usecase.ritmo_download.RitmoDownloadUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.RitmoFirebaseUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo_local.RitmoLocalUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -82,7 +80,6 @@ class PlayerViewModel @Inject constructor(
 
     private fun getTrack(id: String) {
         viewModelScope.launch {
-
             ritmoDownloadUseCase.getDownloaded().let {
                 if (it.contains(id)) {
                     _state.value = state.value.copy(isDownloaded = true)
@@ -95,7 +92,6 @@ class PlayerViewModel @Inject constructor(
             } else {
                 state.value.copy(track = track, isFavorite = true)
             }
-
         }
     }
 
