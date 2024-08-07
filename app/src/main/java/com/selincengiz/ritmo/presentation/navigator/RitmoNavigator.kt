@@ -122,6 +122,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 val viewModel: HomeViewModel = hiltViewModel()
                 HomeScreen(
                     state = viewModel.state.value,
+                    event = viewModel::onEvent,
                     navigateToDetail = { id ->
                         navigateToArgs(
                             navController = navController,

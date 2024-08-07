@@ -143,7 +143,7 @@ fun ProfileScreen(
                 LazyColumn(
                     modifier = modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.8f)
+                        .fillMaxHeight()
                         .padding(start = 15.dp),
                     verticalArrangement = Arrangement.spacedBy(MediumPadding1),
                     contentPadding = PaddingValues(all = ExtraSmallPadding2)

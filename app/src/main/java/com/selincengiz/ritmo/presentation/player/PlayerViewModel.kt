@@ -82,6 +82,7 @@ class PlayerViewModel @Inject constructor(
 
     private fun getTrack(id: String) {
         viewModelScope.launch {
+
             ritmoDownloadUseCase.getDownloaded().let {
                 if (it.contains(id)) {
                     _state.value = state.value.copy(isDownloaded = true)
@@ -94,6 +95,7 @@ class PlayerViewModel @Inject constructor(
             } else {
                 state.value.copy(track = track, isFavorite = true)
             }
+
         }
     }
 

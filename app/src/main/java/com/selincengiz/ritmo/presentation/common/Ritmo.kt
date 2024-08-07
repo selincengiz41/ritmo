@@ -31,12 +31,12 @@ import com.selincengiz.ritmo.presentation.Dimens.SmallPadding
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ListedRitmo(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: () -> Unit) {
+fun Ritmo(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: (String) -> Unit) {
     val context = LocalContext.current
     Row(
         modifier
             .fillMaxWidth()
-            .clickable { onClick() }) {
+            .clickable { onClick(trackUI.id ?: "") }) {
 
         AsyncImage(
             modifier = Modifier
@@ -44,7 +44,7 @@ fun ListedRitmo(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: () -> 
                 .size(height = 82.dp, width = 84.dp),
             model = ImageRequest.Builder(context).data(trackUI.album?.coverMedium).build(),
             placeholder = painterResource(id = R.drawable.placeholder),
-            error =painterResource(id = R.drawable.placeholder) ,
+            error = painterResource(id = R.drawable.placeholder),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
@@ -63,7 +63,9 @@ fun ListedRitmo(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: () -> 
                 color = Color.White
             )
             Text(
-                modifier = Modifier.fillMaxWidth().basicMarquee(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .basicMarquee(),
                 text = trackUI.album?.title ?: "",
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                 color = Color.White
@@ -77,7 +79,26 @@ fun ListedRitmo(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: () -> 
 @Preview
 @Composable
 private fun ListedRitmoPrev() {
-    ListedRitmo(trackUI = TrackUI(null, null, null, null, null, null, null, null, null, null, null, null, "I dont miss you", null, null, null)) {
+    Ritmo(
+        trackUI = TrackUI(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "I dont miss you",
+            null,
+            null,
+            null
+        )
+    ) {
 
     }
 }

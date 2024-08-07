@@ -48,7 +48,7 @@ class SearchViewModel @Inject constructor(
                     add(state.value.searchQuery)
                 }.take(15).distinct().toMutableList()
             )
-            _state.value = state.value.copy(ritmo = ritmo)
+           _state.value = state.value.copy(ritmo = ritmo)
         }
     }
 }

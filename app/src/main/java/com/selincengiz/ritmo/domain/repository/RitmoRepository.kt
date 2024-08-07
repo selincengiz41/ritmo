@@ -1,15 +1,17 @@
 package com.selincengiz.ritmo.domain.repository
 
+import androidx.paging.PagingData
 import com.selincengiz.ritmo.domain.model.AlbumUI
+import com.selincengiz.ritmo.domain.model.DownloadedUI
 import com.selincengiz.ritmo.domain.model.PlaylistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 import kotlinx.coroutines.flow.Flow
 
 
 interface RitmoRepository {
-    suspend fun search(
+     fun search(
         q: String,
-    ): List<TrackUI?>?
+    ):  Flow<PagingData<TrackUI>>
 
     suspend fun getAlbum(
         id: String,

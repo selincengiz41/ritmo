@@ -30,7 +30,7 @@ import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
-import com.selincengiz.ritmo.presentation.common.ListedRitmo
+import com.selincengiz.ritmo.presentation.common.Ritmo
 
 @Composable
 fun DetailScreen(
@@ -89,7 +89,7 @@ fun DetailScreen(
             ) {
                 items(count = state.album.tracks?.size ?: 0) {
                     state.album.tracks?.get(it)?.let { track ->
-                        ListedRitmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
+                        Ritmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
                     }
                 }
             }
@@ -104,7 +104,7 @@ fun DetailScreen(
             ) {
                 items(count = state.playlist.tracks?.size ?: 0) {
                     state.playlist.tracks?.get(it)?.let { track ->
-                        ListedRitmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
+                        Ritmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
                     }
                 }
             }

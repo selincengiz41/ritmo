@@ -33,11 +33,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
+import com.selincengiz.ritmo.presentation.common.ListRitmo
 import com.selincengiz.ritmo.presentation.search.components.CustomSearchBar
-import com.selincengiz.ritmo.presentation.common.ListedRitmo
+import com.selincengiz.ritmo.presentation.common.handlePagingResultTrack
 import com.selincengiz.ritmo.presentation.search.components.SingleSelectionCheckbox
 import com.selincengiz.ritmo.ui.theme.BlueButtonColor
 
@@ -119,20 +121,15 @@ fun SearchScreen(
             }
         } else {
             state.ritmo?.let {
-                LazyColumn(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(start = 15.dp),
-                    verticalArrangement = Arrangement.spacedBy(MediumPadding1),
-                    contentPadding = PaddingValues(all = ExtraSmallPadding2)
-                ) {
-                    items(count = state.ritmo.size) {
-                        state.ritmo[it]?.let { track ->
-                            ListedRitmo(
-                                trackUI = track,
-                                onClick = { navigateToPlayer(track.id ?: "") })
-                        }
-                    }
+                val handlePagingResult =
+                    handlePagingResultTrack(
+                        tracks = it.collectAsLazyPagingItems(),
+                        title = "search"
+                    )
+                if (handlePagingResult) {
+                    ListRitmo(
+                        trackUI = it.collectAsLazyPagingItems(),
+                        navigateToPlayer = { id -> navigateToPlayer(id) })
                 }
             }
         }

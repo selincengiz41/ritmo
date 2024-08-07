@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.selincengiz.ritmo.R
@@ -39,14 +40,15 @@ import com.selincengiz.ritmo.ui.theme.DarkGray
 @Composable
 fun Release(
     modifier: Modifier = Modifier,
-    trackUI: TrackUI,
+    trackUI: LazyPagingItems<TrackUI>,
     isFavorite: Boolean = false,
-    onPlayClick: () -> Unit
+    onPlayClick: (id: String) -> Unit
 ) {
     val context = LocalContext.current
+    val track = trackUI.itemSnapshotList.items.firstOrNull()
     Row(
         modifier
-            .clickable { onPlayClick() }
+            .clickable { onPlayClick(track?.id ?: "") }
             .clip(RoundedCornerShape(6.dp))
             .background(DarkGray.copy(alpha = 0.6f))
     ) {
@@ -55,7 +57,7 @@ fun Release(
             modifier = Modifier
                 .clip(RoundedCornerShape(6.dp))
                 .size(height = 144.dp, width = 136.dp),
-            model = ImageRequest.Builder(context).data(trackUI.album?.coverMedium).build(),
+            model = ImageRequest.Builder(context).data(track?.album?.coverMedium).build(),
             placeholder = painterResource(id = R.drawable.placeholder),
             contentDescription = null,
             contentScale = ContentScale.Crop
@@ -64,18 +66,18 @@ fun Release(
         Column(modifier = Modifier.padding(SmallPadding)) {
 
             Text(
-                text = trackUI.title ?: "",
+                text = track?.title ?: "",
                 style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = trackUI.artist?.name ?: "",
+                text = track?.artist?.name ?: "",
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                 color = Color.White
             )
             Text(
-                text = trackUI.album?.title ?: "",
+                text = track?.album?.title ?: "",
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                 color = Color.White,
                 maxLines = 1,
@@ -103,30 +105,4 @@ fun Release(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun ReleasePrev() {
-    Release(
-        trackUI = TrackUI(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            "I dont miss you",
-            null,
-            null,
-            null,
-        ),
-        onPlayClick = {},
-    )
 }

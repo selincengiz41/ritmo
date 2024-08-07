@@ -15,6 +15,8 @@ interface RitmoApi {
     @GET(SEARCH)
     suspend fun search(
         @Query("q") q: String,
+        @Query("index") index: Int,
+        @Query("limit") limit: Int
     ): SearchResponse
 
     @GET(ALBUM)

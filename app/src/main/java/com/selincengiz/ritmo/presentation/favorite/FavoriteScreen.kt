@@ -18,10 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.selincengiz.ritmo.domain.model.TrackUI
-import com.selincengiz.ritmo.presentation.Dimens
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
-import com.selincengiz.ritmo.presentation.common.ListedRitmo
+import com.selincengiz.ritmo.presentation.common.Ritmo
 
 @Composable
 fun FavoriteScreen(
@@ -57,7 +56,7 @@ fun FavoriteScreen(
             ) {
                 items(count = state.favoriteRitmo.size ) {
                     state.favoriteRitmo[it]?.let { track ->
-                        ListedRitmo(
+                        Ritmo(
                             trackUI = track,
                             onClick = { navigateToPlayer(track) })
                     }

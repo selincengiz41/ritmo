@@ -1,18 +1,24 @@
 package com.selincengiz.ritmo.data.repository
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.selincengiz.ritmo.data.local.DownloadDao
 import com.selincengiz.ritmo.data.local.RitmoDao
 import com.selincengiz.ritmo.data.local.entities.DownloadedSong
 import com.selincengiz.ritmo.data.mapper.Mappers.toAlbumUI
+import com.selincengiz.ritmo.data.mapper.Mappers.toDownloadedUI
 import com.selincengiz.ritmo.data.mapper.Mappers.toPlaylistUI
 import com.selincengiz.ritmo.data.mapper.Mappers.toTrackEntity
 import com.selincengiz.ritmo.data.mapper.Mappers.toTrackUI
 import com.selincengiz.ritmo.data.remote.RitmoApi
+import com.selincengiz.ritmo.data.remote.SearchPagingSource
 import com.selincengiz.ritmo.data.remote.dto.ListPlaylistUI
 import com.selincengiz.ritmo.domain.model.AlbumUI
+import com.selincengiz.ritmo.domain.model.DownloadedUI
 import com.selincengiz.ritmo.domain.model.PlaylistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.domain.repository.RitmoRepository
@@ -27,8 +33,16 @@ class RitmoRepositoryImpl(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : RitmoRepository {
-    override suspend fun search(q: String): List<TrackUI?>? {
-        return api.search(q).data?.map { it?.toTrackUI() }
+    override  fun search(q: String):  Flow<PagingData<TrackUI>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = {
+                SearchPagingSource(
+                    ritmoApi = api,
+                    searchQuery = q
+                )
+            }
+        ).flow
     }
 
     override suspend fun getAlbum(id: String): AlbumUI {
