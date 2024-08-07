@@ -2,7 +2,6 @@ package com.selincengiz.ritmo.domain.repository
 
 import androidx.paging.PagingData
 import com.selincengiz.ritmo.domain.model.AlbumUI
-import com.selincengiz.ritmo.domain.model.DownloadedUI
 import com.selincengiz.ritmo.domain.model.PlaylistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 import kotlinx.coroutines.flow.Flow

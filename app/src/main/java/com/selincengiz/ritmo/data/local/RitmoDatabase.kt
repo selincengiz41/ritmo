@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import com.selincengiz.ritmo.data.local.entities.DownloadedSong
 import com.selincengiz.ritmo.data.local.entities.TrackEntity
 
-@Database(entities = [TrackEntity::class, DownloadedSong::class], version = 4)
+@Database(entities = [TrackEntity::class, DownloadedSong::class], version = 5)
 @TypeConverters(RitmoTypeConverter::class)
 abstract class RitmoDatabase : RoomDatabase() {
 
