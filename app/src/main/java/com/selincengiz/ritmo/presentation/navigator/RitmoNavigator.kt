@@ -1,26 +1,24 @@
 package com.selincengiz.ritmo.presentation.navigator
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.selincengiz.ritmo.util.ConnectivityHelper
 import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.detail.DetailScreen
@@ -42,7 +40,7 @@ import com.selincengiz.ritmo.presentation.search.SearchScreen
 import com.selincengiz.ritmo.presentation.search.SearchViewModel
 
 
-@RequiresApi(Build.VERSION_CODES.P)
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun RitmoNavigator(navigateToLogin: () -> Unit) {
     val bottomNavigationItems = remember {
@@ -131,10 +129,11 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                             route = Route.DetailScreen.route
                         )
                     },
-                    navigateToPlayer = { id ->
-                        navigateToArgs(
+                    navigateToPlayer = { trackList, index ->
+                        navigateToPlayer(
                             navController = navController,
-                            id = id,
+                            trackList = trackList,
+                            index = index,
                             route = Route.PlayerScreen.route
                         )
                     }
@@ -148,10 +147,11 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 SearchScreen(
                     state = state,
                     event = viewModel::onEvent,
-                    navigateToPlayer = { id ->
-                        navigateToArgs(
+                    navigateToPlayer = { trackList, index ->
+                        navigateToPlayer(
                             navController = navController,
-                            id = id,
+                            trackList = trackList,
+                            index = index,
                             route = Route.PlayerScreen.route
                         )
                     }
@@ -167,10 +167,11 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                         DetailScreen(
                             state = viewModel.state.value,
                             event = viewModel::onEvent,
-                            navigateToPlayer = { playerId ->
-                                navigateToArgs(
+                            navigateToPlayer = { trackList, index ->
+                                navigateToPlayer(
                                     navController = navController,
-                                    id = playerId,
+                                    trackList = trackList,
+                                    index = index,
                                     route = Route.PlayerScreen.route
                                 )
                             }
@@ -181,19 +182,19 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
             composable(route = Route.PlayerScreen.route) {
                 val viewModel: PlayerViewModel = hiltViewModel()
                 val track =
-                    navController.previousBackStackEntry?.savedStateHandle?.get<TrackUI?>("track")
-                if (track != null) {
-                    viewModel.onEvent(PlayerEvent.UpdateTrack(track))
-                } else {
-                    val id =
-                        navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
-                    viewModel.onEvent(PlayerEvent.GetTrack(id ?: ""))
+                    navController.previousBackStackEntry?.savedStateHandle?.get<List<TrackUI?>>("track")
+                val index =
+                    navController.previousBackStackEntry?.savedStateHandle?.get<Int>("index")
+                LaunchedEffect(track,index) {
+                    viewModel.onEvent(PlayerEvent.UpdateTrack(track, index))
                 }
                 PlayerScreen(
                     state = viewModel.state.value,
                     event = viewModel::onEvent,
                     navigateUp = {
-                        val wasNavigatedFromDownloads = navController.previousBackStackEntry?.savedStateHandle?.contains("track") ?: false
+                        val wasNavigatedFromDownloads =
+                            navController.previousBackStackEntry?.savedStateHandle?.contains("track")
+                                ?: false
                         if (wasNavigatedFromDownloads) {
                             navController.navigate(Route.FavoriteScreen.route) {
                                 popUpTo(Route.PlayerScreen.route) {
@@ -206,26 +207,17 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
             }
 
             composable(route = Route.FavoriteScreen.route) {
-                val context = LocalContext.current
                 val viewModel: FavoriteViewModel = hiltViewModel()
                 val state = viewModel.state.value
                 FavoriteScreen(
                     state = state,
-                    navigateToPlayer = { track ->
-                        val isConnected = ConnectivityHelper.isOnline(context)
-                        if (isConnected) {
-                            navigateToArgs(
-                                navController = navController,
-                                id = track.id ?: "",
-                                route = Route.PlayerScreen.route
-                            )
-                        } else {
-                            navigateToDownloads(
-                                navController = navController,
-                                track = track,
-                                route = Route.PlayerScreen.route
-                            )
-                        }
+                    navigateToPlayer = { track, index ->
+                        navigateToPlayer(
+                            navController = navController,
+                            trackList = track,
+                            index = index,
+                            route = Route.PlayerScreen.route
+                        )
                     }
                 )
             }
@@ -267,7 +259,13 @@ private fun navigateToArgs(navController: NavController, id: String, route: Stri
     navController.navigate(route = route)
 }
 
-private fun navigateToDownloads(navController: NavController, track: TrackUI, route: String) {
-    navController.currentBackStackEntry?.savedStateHandle?.set("track", track)
+private fun navigateToPlayer(
+    navController: NavController,
+    trackList: List<TrackUI?>,
+    index: Int,
+    route: String
+) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("track", trackList)
+    navController.currentBackStackEntry?.savedStateHandle?.set("index", index)
     navController.navigate(route = route)
 }

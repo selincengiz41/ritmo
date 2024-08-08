@@ -22,11 +22,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.selincengiz.ritmo.R
+import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
@@ -37,7 +37,7 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     state: DetailState,
     event: (DetailsEvent) -> Unit,
-    navigateToPlayer: (String) -> Unit
+    navigateToPlayer: (List<TrackUI?>, Int) -> Unit
 ) {
     val context = LocalContext.current
     Column(
@@ -87,9 +87,11 @@ fun DetailScreen(
                 verticalArrangement = Arrangement.spacedBy(MediumPadding1),
                 contentPadding = PaddingValues(all = ExtraSmallPadding2)
             ) {
-                items(count = state.album.tracks?.size ?: 0) {
-                    state.album.tracks?.get(it)?.let { track ->
-                        Ritmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
+                items(count = state.album.tracks?.size ?: 0) { index ->
+                    state.album.tracks?.get(index)?.let { track ->
+                        Ritmo(
+                            trackUI = track,
+                            onClick = { navigateToPlayer(state.album.tracks, index) })
                     }
                 }
             }
@@ -102,9 +104,11 @@ fun DetailScreen(
                 verticalArrangement = Arrangement.spacedBy(MediumPadding1),
                 contentPadding = PaddingValues(all = ExtraSmallPadding2)
             ) {
-                items(count = state.playlist.tracks?.size ?: 0) {
-                    state.playlist.tracks?.get(it)?.let { track ->
-                        Ritmo(trackUI = track, onClick = { navigateToPlayer(track.id ?: "") })
+                items(count = state.playlist.tracks?.size ?: 0) { index ->
+                    state.playlist.tracks?.get(index)?.let { track ->
+                        Ritmo(
+                            trackUI = track,
+                            onClick = { navigateToPlayer(state.playlist.tracks, index) })
                     }
                 }
             }
@@ -112,9 +116,3 @@ fun DetailScreen(
     }
 }
 
-
-@Preview
-@Composable
-private fun DetailPrev() {
-    DetailScreen(state = DetailState(), event = {}, navigateToPlayer = {})
-}

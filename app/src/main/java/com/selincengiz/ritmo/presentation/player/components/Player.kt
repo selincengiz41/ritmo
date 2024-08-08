@@ -25,16 +25,23 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.smoothstreaming.SsMediaSource
+import androidx.media3.exoplayer.source.ConcatenatingMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
+import com.selincengiz.ritmo.domain.model.TrackUI
+import com.selincengiz.ritmo.presentation.player.PlayerState
 import com.selincengiz.ritmo.util.ConnectivityHelper
 import com.selincengiz.ritmo.util.DownloadUtil.cacheDataSourceFactory
 
 @Composable
 @androidx.annotation.OptIn(UnstableApi::class)
-fun Player(modifier: Modifier = Modifier, passedString: String) {
+fun Player(
+    modifier: Modifier = Modifier,
+    state: PlayerState,
+    event: (Int) -> Unit
+) {
     val context = LocalContext.current
     var player: Player? by remember {
         mutableStateOf(null)
@@ -45,20 +52,32 @@ fun Player(modifier: Modifier = Modifier, passedString: String) {
     playerView.keepScreenOn = true
     playerView.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING)
 
+
     ComposableLifecycle { _, event ->
         when (event) {
-
             Lifecycle.Event.ON_RESUME -> {
-                    player = initPlayer(context, passedString)
-                    playerView.onResume()
+                player = initPlayer(context, state).also {
+                    it.addListener(object : Player.Listener {
+                        override fun onEvents(
+                            player: Player,
+                            events: Player.Events
+                        ) {
+                            if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
+                                val currentItemIndex = player.currentMediaItemIndex
+                                event(currentItemIndex)
+                            }
+                        }
+                    })
+                }
+                playerView.onResume()
             }
 
             Lifecycle.Event.ON_PAUSE -> {
-                    playerView.apply {
-                        player?.release()
-                        onPause()
-                        player = null
-                    }
+                playerView.apply {
+                    player?.release()
+                    onPause()
+                    player = null
+                }
             }
 
             else -> {}
@@ -89,13 +108,18 @@ fun ComposableLifecycle(
 
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-fun initPlayer(context: Context, passedString: String): Player {
+fun initPlayer(context: Context, state: PlayerState): Player {
     return ExoPlayer.Builder(context).build().apply {
+        val concatenatingMediaSource = ConcatenatingMediaSource()
         val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
-        val uri =
-            Uri.parse(passedString)
-        val mediaSource = buildMediaSource(uri, defaultHttpDataSourceFactory, context)
-        setMediaSource(mediaSource)
+        state.trackList?.forEach { track ->
+            val uri = Uri.parse(track?.preview)
+            val mediaSource = buildMediaSource(uri, defaultHttpDataSourceFactory, context)
+            concatenatingMediaSource.addMediaSource(mediaSource)
+        }
+
+        setMediaSource(concatenatingMediaSource)
+        seekTo(state.trackList?.indexOf(state.track) ?: 0, 0)
         playWhenReady = true
         prepare()
     }

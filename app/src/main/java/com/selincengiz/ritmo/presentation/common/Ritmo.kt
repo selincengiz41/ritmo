@@ -31,12 +31,12 @@ import com.selincengiz.ritmo.presentation.Dimens.SmallPadding
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Ritmo(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: (String) -> Unit) {
+fun Ritmo(modifier: Modifier = Modifier, trackUI: TrackUI, onClick: () -> Unit) {
     val context = LocalContext.current
     Row(
         modifier
             .fillMaxWidth()
-            .clickable { onClick(trackUI.id ?: "") }) {
+            .clickable { onClick() }) {
 
         AsyncImage(
             modifier = Modifier

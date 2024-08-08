@@ -17,7 +17,7 @@ import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 fun ListRitmo(
     modifier: Modifier = Modifier,
     trackUI: LazyPagingItems<TrackUI>,
-    navigateToPlayer: (String) -> Unit
+    navigateToPlayer: (List<TrackUI?>, Int) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -26,11 +26,11 @@ fun ListRitmo(
         verticalArrangement = Arrangement.spacedBy(MediumPadding1),
         contentPadding = PaddingValues(all = ExtraSmallPadding2)
     ) {
-        items(count = trackUI.itemCount) {
-            trackUI[it]?.let { track ->
+        items(count = trackUI.itemCount) { index ->
+            trackUI[index]?.let { track ->
                 Ritmo(
                     trackUI = track,
-                    onClick = { id -> navigateToPlayer(id) })
+                    onClick = { navigateToPlayer(trackUI.itemSnapshotList.items, index) })
             }
         }
     }

@@ -5,9 +5,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import com.selincengiz.ritmo.domain.model.TrackUI
-import com.selincengiz.ritmo.domain.usecase.ritmo.RitmoUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo_download.RitmoDownloadUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo_firebase.RitmoFirebaseUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo_local.RitmoLocalUseCase
@@ -18,7 +18,6 @@ import javax.inject.Inject
 @OptIn(UnstableApi::class)
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val ritmoUseCase: RitmoUseCase,
     private val ritmoLocalUseCase: RitmoLocalUseCase,
     private val ritmoFirebaseUseCase: RitmoFirebaseUseCase,
     private val ritmoDownloadUseCase: RitmoDownloadUseCase
@@ -28,10 +27,6 @@ class PlayerViewModel @Inject constructor(
 
     fun onEvent(event: PlayerEvent) {
         when (event) {
-            is PlayerEvent.GetTrack -> {
-                getTrack(event.id)
-            }
-
             is PlayerEvent.InsertDeleteTrack -> {
                 insertDeleteTrack(_state.value.track!!)
             }
@@ -50,7 +45,7 @@ class PlayerViewModel @Inject constructor(
             }
 
             is PlayerEvent.UpdateTrack -> {
-                updateTrack(event.track)
+                updateTrack(event.track, event.index)
             }
 
             is PlayerEvent.Download -> {
@@ -59,38 +54,34 @@ class PlayerViewModel @Inject constructor(
                     _state.value = state.value.copy(isDownloaded = true)
                 }
             }
-        }
-    }
 
-    private fun updateTrack(track: TrackUI) {
-        viewModelScope.launch {
-            ritmoDownloadUseCase.getDownloaded().let {
-                if (it.contains(track.id)) {
-                    _state.value = state.value.copy(isDownloaded = true)
-                }
-            }
-            val trackResponse = ritmoLocalUseCase.getLocalTrack(id = track.id ?: "")
-            _state.value = if (trackResponse == null) {
-                state.value.copy(track = track, isFavorite = false)
-            } else {
-                state.value.copy(track = track, isFavorite = true)
+            is PlayerEvent.ChangeSong -> {
+                changeSong(event.index)
             }
         }
     }
 
-    private fun getTrack(id: String) {
+    private fun changeSong(index: Int) {
+        updateTrack(_state.value.trackList, index)
+    }
+
+    private fun updateTrack(trackList: List<TrackUI?>?, index: Int?) {
         viewModelScope.launch {
+            val track = trackList?.get(index ?: 0)
+            _state.value = state.value.copy(track = track, trackList = trackList)
             ritmoDownloadUseCase.getDownloaded().let {
-                if (it.contains(id)) {
+                if (it.contains(track?.id)) {
                     _state.value = state.value.copy(isDownloaded = true)
+                } else {
+                    _state.value = state.value.copy(isDownloaded = false)
                 }
             }
-            val track = ritmoUseCase.getTrack(id = id)
-            val trackResponse = ritmoLocalUseCase.getLocalTrack(id = track.id ?: "")
+            val trackResponse =
+                ritmoLocalUseCase.getLocalTrack(id = track?.id ?: "")
             _state.value = if (trackResponse == null) {
-                state.value.copy(track = track, isFavorite = false)
+                state.value.copy(isFavorite = false)
             } else {
-                state.value.copy(track = track, isFavorite = true)
+                state.value.copy(isFavorite = true)
             }
         }
     }
@@ -99,21 +90,13 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             val trackResponse = ritmoLocalUseCase.getLocalTrack(id = track.id ?: "")
             if (trackResponse == null) {
-                insertTrack(track)
+                ritmoLocalUseCase.insertTrack(track)
+                _state.value = state.value.copy(isFavorite = true)
             } else {
-                deleteTrack(track)
+                ritmoLocalUseCase.deleteTrack(track)
+                _state.value = state.value.copy(isFavorite = false)
             }
         }
-    }
-
-    private suspend fun insertTrack(track: TrackUI) {
-        ritmoLocalUseCase.insertTrack(track)
-        _state.value = state.value.copy(sideEffect = "Track Saved")
-    }
-
-    private suspend fun deleteTrack(track: TrackUI) {
-        ritmoLocalUseCase.deleteTrack(track)
-        _state.value = state.value.copy(sideEffect = "Track Deleted")
     }
 
     private fun getPlaylists() {

@@ -26,7 +26,7 @@ import com.selincengiz.ritmo.presentation.common.Ritmo
 fun FavoriteScreen(
     modifier: Modifier = Modifier,
     state: FavoriteState,
-    navigateToPlayer: (TrackUI) -> Unit
+    navigateToPlayer: (List<TrackUI?>, Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -54,11 +54,11 @@ fun FavoriteScreen(
                 verticalArrangement = Arrangement.spacedBy(MediumPadding1),
                 contentPadding = PaddingValues(all = ExtraSmallPadding2)
             ) {
-                items(count = state.favoriteRitmo.size ) {
-                    state.favoriteRitmo[it]?.let { track ->
+                items(count = state.favoriteRitmo.size) { index ->
+                    state.favoriteRitmo[index]?.let { track ->
                         Ritmo(
                             trackUI = track,
-                            onClick = { navigateToPlayer(track) })
+                            onClick = { navigateToPlayer(state.favoriteRitmo, index) })
                     }
                 }
             }

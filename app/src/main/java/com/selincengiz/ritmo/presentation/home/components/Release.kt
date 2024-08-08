@@ -41,13 +41,13 @@ fun Release(
     modifier: Modifier = Modifier,
     trackUI: LazyPagingItems<TrackUI>,
     isFavorite: Boolean = false,
-    onPlayClick: (id: String) -> Unit
+    onPlayClick: (List<TrackUI?>, Int) -> Unit
 ) {
     val context = LocalContext.current
     val track = trackUI.itemSnapshotList.items.firstOrNull()
     Row(
         modifier
-            .clickable { onPlayClick(track?.id ?: "") }
+            .clickable { onPlayClick(trackUI.itemSnapshotList.items, 0) }
             .clip(RoundedCornerShape(6.dp))
             .background(DarkGray.copy(alpha = 0.6f))
     ) {

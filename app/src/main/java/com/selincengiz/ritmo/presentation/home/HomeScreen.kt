@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.Dimens.SmallPadding
 import com.selincengiz.ritmo.presentation.common.handlePagingResultAlbum
@@ -29,7 +30,7 @@ fun HomeScreen(
     state: HomeState,
     event: (HomeEvent) -> Unit,
     navigateToDetail: (String) -> Unit,
-    navigateToPlayer: (String) -> Unit
+    navigateToPlayer: (List<TrackUI?>, Int) -> Unit
 ) {
 
 
@@ -78,7 +79,10 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(SmallPadding))
                 state.track?.let {
                     val handlePagingResult =
-                        handlePagingResultTrack(tracks = it.collectAsLazyPagingItems(), title = "release")
+                        handlePagingResultTrack(
+                            tracks = it.collectAsLazyPagingItems(),
+                            title = "release"
+                        )
                     if (handlePagingResult) {
                         event(
                             HomeEvent.IsFavorite(
@@ -89,7 +93,7 @@ fun HomeScreen(
                         Release(
                             trackUI = it.collectAsLazyPagingItems(),
                             modifier = Modifier.padding(MediumPadding1),
-                            onPlayClick = { id -> navigateToPlayer(id) },
+                            onPlayClick = { list, index -> navigateToPlayer(list, index) },
                             isFavorite = state.isFavorite ?: false
                         )
                     }

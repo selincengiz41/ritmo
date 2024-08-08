@@ -31,10 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.selincengiz.ritmo.R
+import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.common.ListRitmo
@@ -49,7 +49,7 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     state: SearchState,
     event: (SearchEvent) -> Unit,
-    navigateToPlayer: (String) -> Unit
+    navigateToPlayer: (List<TrackUI?>, Int) -> Unit
 ) {
     var historyVisibility by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
@@ -129,7 +129,7 @@ fun SearchScreen(
                 if (handlePagingResult) {
                     ListRitmo(
                         trackUI = it.collectAsLazyPagingItems(),
-                        navigateToPlayer = { id -> navigateToPlayer(id) })
+                        navigateToPlayer = { list, index -> navigateToPlayer(list, index) })
                 }
             }
         }
@@ -153,11 +153,4 @@ fun SearchScreen(
             }
         }
     }
-}
-
-
-@Preview
-@Composable
-private fun SearchPrev() {
-    SearchScreen(state = SearchState(), event = { SearchEvent.SearchRitmo }, navigateToPlayer = {})
 }
