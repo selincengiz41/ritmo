@@ -55,7 +55,7 @@ fun Player(
 
     ComposableLifecycle { _, event ->
         when (event) {
-            Lifecycle.Event.ON_RESUME -> {
+            Lifecycle.Event.ON_START -> {
                 player = initPlayer(context, state).also {
                     it.addListener(object : Player.Listener {
                         override fun onEvents(

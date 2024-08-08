@@ -1,9 +1,8 @@
-package com.selincengiz.ritmo.presentation.player
+package com.selincengiz.ritmo.presentation.player.components
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,13 +32,9 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +55,8 @@ import com.selincengiz.ritmo.R
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.common.Playlist
-import com.selincengiz.ritmo.presentation.player.components.Player
+import com.selincengiz.ritmo.presentation.player.PlayerEvent
+import com.selincengiz.ritmo.presentation.player.PlayerState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.P)
@@ -179,16 +175,6 @@ fun PlayerScreen(
             contentDescription = "Favorite",
             tint = Color.White
         )
-
-        state.track?.preview?.let {
-            Player(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                state = state,
-                event = { index -> event(PlayerEvent.ChangeSong(index)) }
-            )
-        }
 
         if (showBottomSheet) {
             ModalBottomSheet(

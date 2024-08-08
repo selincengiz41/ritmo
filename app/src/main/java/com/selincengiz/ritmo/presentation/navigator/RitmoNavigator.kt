@@ -32,8 +32,8 @@ import com.selincengiz.ritmo.presentation.main.components.Route
 import com.selincengiz.ritmo.presentation.navigator.components.BottomNavigation
 import com.selincengiz.ritmo.presentation.navigator.components.BottomNavigationItem
 import com.selincengiz.ritmo.presentation.player.PlayerEvent
-import com.selincengiz.ritmo.presentation.player.PlayerScreen
 import com.selincengiz.ritmo.presentation.player.PlayerViewModel
+import com.selincengiz.ritmo.presentation.player.SongScreen
 import com.selincengiz.ritmo.presentation.profile.ProfileScreen
 import com.selincengiz.ritmo.presentation.profile.ProfileViewModel
 import com.selincengiz.ritmo.presentation.search.SearchScreen
@@ -134,7 +134,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                             navController = navController,
                             trackList = trackList,
                             index = index,
-                            route = Route.PlayerScreen.route
+                            route = Route.SongScreen.route
                         )
                     }
                 )
@@ -152,7 +152,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                             navController = navController,
                             trackList = trackList,
                             index = index,
-                            route = Route.PlayerScreen.route
+                            route = Route.SongScreen.route
                         )
                     }
                 )
@@ -172,14 +172,14 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                                     navController = navController,
                                     trackList = trackList,
                                     index = index,
-                                    route = Route.PlayerScreen.route
+                                    route = Route.SongScreen.route
                                 )
                             }
                         )
                     }
             }
 
-            composable(route = Route.PlayerScreen.route) {
+            composable(route = Route.SongScreen.route) {
                 val viewModel: PlayerViewModel = hiltViewModel()
                 val track =
                     navController.previousBackStackEntry?.savedStateHandle?.get<List<TrackUI?>>("track")
@@ -188,7 +188,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 LaunchedEffect(track,index) {
                     viewModel.onEvent(PlayerEvent.UpdateTrack(track, index))
                 }
-                PlayerScreen(
+                SongScreen(
                     state = viewModel.state.value,
                     event = viewModel::onEvent,
                     navigateUp = {
@@ -197,7 +197,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                                 ?: false
                         if (wasNavigatedFromDownloads) {
                             navController.navigate(Route.FavoriteScreen.route) {
-                                popUpTo(Route.PlayerScreen.route) {
+                                popUpTo(Route.SongScreen.route) {
                                     inclusive = true
                                 }
                             }
@@ -216,7 +216,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                             navController = navController,
                             trackList = track,
                             index = index,
-                            route = Route.PlayerScreen.route
+                            route = Route.SongScreen.route
                         )
                     }
                 )
