@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.selincengiz.ritmo.data.local.entities.DownloadedSong
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DownloadDao {

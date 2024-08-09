@@ -30,7 +30,6 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
-import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.player.PlayerState
 import com.selincengiz.ritmo.util.ConnectivityHelper
 import com.selincengiz.ritmo.util.DownloadUtil.cacheDataSourceFactory
@@ -72,7 +71,15 @@ fun Player(
                 playerView.onResume()
             }
 
+            Lifecycle.Event.ON_RESUME -> {
+                playerView.onResume()
+            }
+
             Lifecycle.Event.ON_PAUSE -> {
+                playerView.onPause()
+            }
+
+            Lifecycle.Event.ON_STOP -> {
                 playerView.apply {
                     player?.release()
                     onPause()
