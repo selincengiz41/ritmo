@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -38,6 +39,7 @@ import com.selincengiz.ritmo.presentation.profile.ProfileScreen
 import com.selincengiz.ritmo.presentation.profile.ProfileViewModel
 import com.selincengiz.ritmo.presentation.search.SearchScreen
 import com.selincengiz.ritmo.presentation.search.SearchViewModel
+import com.selincengiz.ritmo.util.ConnectivityHelper
 
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -162,11 +164,12 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 val viewModel: DetailViewModel = hiltViewModel()
                 navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
                     ?.let { id ->
-                        viewModel.onEvent(DetailsEvent.GetPlaylist(id))
-                        viewModel.onEvent(DetailsEvent.GetAlbum(id))
+                        if(ConnectivityHelper.isOnline(LocalContext.current)){
+                            viewModel.onEvent(DetailsEvent.GetPlaylist(id))
+                            viewModel.onEvent(DetailsEvent.GetAlbum(id))
+                        }
                         DetailScreen(
                             state = viewModel.state.value,
-                            event = viewModel::onEvent,
                             navigateToPlayer = { trackList, index ->
                                 navigateToPlayer(
                                     navController = navController,
@@ -185,7 +188,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                     navController.previousBackStackEntry?.savedStateHandle?.get<List<TrackUI?>>("track")
                 val index =
                     navController.previousBackStackEntry?.savedStateHandle?.get<Int>("index")
-                LaunchedEffect(track,index) {
+                LaunchedEffect(track, index) {
                     viewModel.onEvent(PlayerEvent.UpdateTrack(track, index))
                 }
                 SongScreen(

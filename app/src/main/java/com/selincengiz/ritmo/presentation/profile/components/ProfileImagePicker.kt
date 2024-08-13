@@ -12,14 +12,11 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -90,8 +87,8 @@ fun ProfileImagePicker(
                     }
                 },
             model = state.image,
-            placeholder = painterResource(id = R.drawable.placeholder),
-            error = painterResource(id = R.drawable.placeholder),
+            placeholder = painterResource(id = R.drawable.placeholder_user),
+            error = painterResource(id = R.drawable.placeholder_user),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             onError = {Log.i("aut", it.result.throwable.message ?: "") }

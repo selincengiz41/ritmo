@@ -30,13 +30,14 @@ import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
+import com.selincengiz.ritmo.presentation.common.EmptyScreen
 import com.selincengiz.ritmo.presentation.common.Ritmo
+import com.selincengiz.ritmo.util.ConnectivityHelper
 
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
     state: DetailState,
-    event: (DetailsEvent) -> Unit,
     navigateToPlayer: (List<TrackUI?>, Int) -> Unit
 ) {
     val context = LocalContext.current
@@ -79,39 +80,43 @@ fun DetailScreen(
         )
         Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
-        state.album?.let {
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp),
-                verticalArrangement = Arrangement.spacedBy(MediumPadding1),
-                contentPadding = PaddingValues(all = ExtraSmallPadding2)
-            ) {
-                items(count = state.album.tracks?.size ?: 0) { index ->
-                    state.album.tracks?.get(index)?.let { track ->
-                        Ritmo(
-                            trackUI = track,
-                            onClick = { navigateToPlayer(state.album.tracks, index) })
+        if (ConnectivityHelper.isOnline(context)) {
+            state.album?.let {
+                LazyColumn(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(start = 15.dp),
+                    verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+                    contentPadding = PaddingValues(all = ExtraSmallPadding2)
+                ) {
+                    items(count = state.album.tracks?.size ?: 0) { index ->
+                        state.album.tracks?.get(index)?.let { track ->
+                            Ritmo(
+                                trackUI = track,
+                                onClick = { navigateToPlayer(state.album.tracks, index) })
+                        }
                     }
                 }
             }
-        }
-        state.playlist?.let {
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp),
-                verticalArrangement = Arrangement.spacedBy(MediumPadding1),
-                contentPadding = PaddingValues(all = ExtraSmallPadding2)
-            ) {
-                items(count = state.playlist.tracks?.size ?: 0) { index ->
-                    state.playlist.tracks?.get(index)?.let { track ->
-                        Ritmo(
-                            trackUI = track,
-                            onClick = { navigateToPlayer(state.playlist.tracks, index) })
+            state.playlist?.let {
+                LazyColumn(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(start = 15.dp),
+                    verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+                    contentPadding = PaddingValues(all = ExtraSmallPadding2)
+                ) {
+                    items(count = state.playlist.tracks?.size ?: 0) { index ->
+                        state.playlist.tracks?.get(index)?.let { track ->
+                            Ritmo(
+                                trackUI = track,
+                                onClick = { navigateToPlayer(state.playlist.tracks, index) })
+                        }
                     }
                 }
             }
+        } else {
+            EmptyScreen()
         }
     }
 }
