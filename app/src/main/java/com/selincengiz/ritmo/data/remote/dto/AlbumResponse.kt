@@ -8,8 +8,6 @@ data class AlbumResponse(
     val artistDto: ArtistDto?,
     @SerializedName("available")
     val available: Boolean?,
-    @SerializedName("contributors")
-    val contributorDtos: List<ContributorDto>?,
     @SerializedName("cover")
     val cover: String?,
     @SerializedName("cover_big")

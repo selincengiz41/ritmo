@@ -18,7 +18,7 @@ import com.selincengiz.ritmo.presentation.onboarding.OnBoardingViewModel
 import com.selincengiz.ritmo.presentation.register.RegisterScreen
 import com.selincengiz.ritmo.presentation.register.RegisterViewModel
 
-@RequiresApi(Build.VERSION_CODES.P)
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun NavGraph(
     startDestination: String,

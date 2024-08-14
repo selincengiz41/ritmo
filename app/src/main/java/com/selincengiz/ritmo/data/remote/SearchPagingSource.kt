@@ -9,7 +9,7 @@ class SearchPagingSource(
     private val ritmoApi: RitmoApi,
     private val searchQuery: String
 ) : PagingSource<Int, TrackUI>() {
-    private var totalNewsCount = 0
+    private var totalTracksCount = 0
 
     override fun getRefreshKey(state: PagingState<Int, TrackUI>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -23,12 +23,12 @@ class SearchPagingSource(
         return try {
             val tracksResponse =
                 ritmoApi.search(q = searchQuery, index = page, limit = params.loadSize)
-            totalNewsCount += tracksResponse.data?.size ?: 0
-            val tracks = tracksResponse.data!!.distinctBy { it?.id }.map { it!!.toTrackUI() }
+            totalTracksCount += tracksResponse.data?.size ?: 0
+            val tracks = tracksResponse.data!!.map { it!!.toTrackUI() }
 
             LoadResult.Page(
                 data = tracks,
-                nextKey = if (totalNewsCount == tracksResponse.total) null else page + 1,
+                nextKey = if (totalTracksCount == tracksResponse.total) null else page + 1,
                 prevKey = null
             )
 

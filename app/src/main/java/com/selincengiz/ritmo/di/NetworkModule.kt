@@ -37,7 +37,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient) = Retrofit.Builder()
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
@@ -45,5 +45,5 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNewsService(retrofit: Retrofit) = retrofit.create<RitmoApi>()
+    fun provideRitmoService(retrofit: Retrofit) = retrofit.create<RitmoApi>()
 }

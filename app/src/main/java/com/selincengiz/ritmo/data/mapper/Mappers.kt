@@ -132,7 +132,6 @@ object Mappers {
         return AlbumUI(
             artistDto?.toArtistUI(),
             available,
-            contributorDtos,
             cover,
             coverBig,
             coverMedium,

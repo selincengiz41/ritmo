@@ -31,7 +31,7 @@ class RitmoRepositoryImpl(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : RitmoRepository {
-    override  fun search(q: String):  Flow<PagingData<TrackUI>> {
+    override fun search(q: String): Flow<PagingData<TrackUI>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {
@@ -59,7 +59,7 @@ class RitmoRepositoryImpl(
         dao.delete(track.toTrackEntity())
     }
 
-    //TODO:Uygulama patlıyor bazen flowdan
+
     override fun getTracksLocal(): Flow<List<TrackUI>> {
         return dao.getTracks().map { it -> it.map { it.toTrackUI() } }
     }
@@ -81,6 +81,7 @@ class RitmoRepositoryImpl(
             }
         } catch (e: Exception) {
             Log.i("getPlaylists", e.message.toString())
+            return null
         }
         return null
     }
@@ -102,7 +103,6 @@ class RitmoRepositoryImpl(
             tempList.map { it?.toPlaylistUI() }
 
         } catch (e: Exception) {
-            Log.i("getPlaylists", e.message.toString())
             emptyList()
         }
     }
@@ -118,11 +118,7 @@ class RitmoRepositoryImpl(
             "tracks" to listOf<TrackUI>()
         )
         playlistsRef.add(playlistData)
-            .addOnSuccessListener {
-                println("Playlist successfully added!")
-            }.addOnFailureListener { e ->
-                println("Error adding playlist: $e")
-            }
+
     }
 
     override fun deletePlaylist(id: String) {
@@ -146,11 +142,7 @@ class RitmoRepositoryImpl(
         playlistsRef.update(
             "tracks",
             newList
-        ).addOnSuccessListener {
-            println("Playlist successfully added!")
-        }.addOnFailureListener { e ->
-            println("Error adding playlist: $e")
-        }
+        )
     }
 
     override suspend fun insertDownloaded(id: String) {

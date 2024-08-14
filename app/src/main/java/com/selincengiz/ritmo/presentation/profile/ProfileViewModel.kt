@@ -17,7 +17,6 @@ class ProfileViewModel @Inject constructor(
     private val ritmoFirebaseUseCase: RitmoFirebaseUseCase,
     private val auth: FirebaseAuth
 ) : ViewModel() {
-    //TODO:Profile internet yokken patlıyor
     private val _state = mutableStateOf(ProfileState())
     val state: State<ProfileState> = _state
 
