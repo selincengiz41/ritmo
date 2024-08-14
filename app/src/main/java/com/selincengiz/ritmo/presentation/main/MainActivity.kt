@@ -45,6 +45,9 @@ class MainActivity : ComponentActivity() {
                             color = Color.Transparent,
                             darkIcons = !isSystemInDarkMode
                         )
+                            systemController.setNavigationBarColor(
+                                color = Color.Black
+                            )
                     }
                     Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background))
                     {

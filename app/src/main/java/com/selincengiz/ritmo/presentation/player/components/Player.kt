@@ -49,11 +49,12 @@ fun Player(
     val playerView = createPlayerView(player)
     playerView.controllerAutoShow = true
     playerView.keepScreenOn = true
+    playerView.controllerShowTimeoutMs=Int.MAX_VALUE
     playerView.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING)
+    playerView.showController()
 
-
-    ComposableLifecycle { _, event ->
-        when (event) {
+    ComposableLifecycle { _, playerEvent ->
+        when (playerEvent) {
             Lifecycle.Event.ON_START -> {
                 player = initPlayer(context, state).also {
                     it.addListener(object : Player.Listener {
@@ -124,7 +125,6 @@ fun initPlayer(context: Context, state: PlayerState): Player {
             val mediaSource = buildMediaSource(uri, defaultHttpDataSourceFactory, context)
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
-
         setMediaSource(concatenatingMediaSource)
         seekTo(state.trackList?.indexOf(state.track) ?: 0, 0)
         playWhenReady = true
