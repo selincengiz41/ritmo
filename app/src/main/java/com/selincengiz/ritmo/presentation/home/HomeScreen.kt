@@ -17,9 +17,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.Dimens.SmallPadding
-import com.selincengiz.ritmo.presentation.common.handlePagingResultAlbum
-import com.selincengiz.ritmo.presentation.common.handlePagingResultArtist
-import com.selincengiz.ritmo.presentation.common.handlePagingResultTrack
+import com.selincengiz.ritmo.presentation.common.handlePagingResult
 import com.selincengiz.ritmo.presentation.home.components.AlbumList
 import com.selincengiz.ritmo.presentation.home.components.ArtistList
 import com.selincengiz.ritmo.presentation.home.components.Release
@@ -57,7 +55,7 @@ fun HomeScreen(
 
                 state.discover?.let {
                     val handlePagingResult =
-                        handlePagingResultAlbum(albums = it.collectAsLazyPagingItems())
+                        handlePagingResult(items = it.collectAsLazyPagingItems(), title = "album")
                     if (handlePagingResult) {
                         AlbumList(
                             albums = it.collectAsLazyPagingItems(),
@@ -79,8 +77,8 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(SmallPadding))
                 state.track?.let {
                     val handlePagingResult =
-                        handlePagingResultTrack(
-                            tracks = it.collectAsLazyPagingItems(),
+                        handlePagingResult(
+                            items = it.collectAsLazyPagingItems(),
                             title = "release"
                         )
                     if (handlePagingResult) {
@@ -109,7 +107,7 @@ fun HomeScreen(
                 )
                 state.artist?.let {
                     val handlePagingResult =
-                        handlePagingResultArtist(artists = it.collectAsLazyPagingItems())
+                        handlePagingResult(items = it.collectAsLazyPagingItems(), title = "artist")
                     if (handlePagingResult) {
                         ArtistList(artist = it.collectAsLazyPagingItems())
                     }

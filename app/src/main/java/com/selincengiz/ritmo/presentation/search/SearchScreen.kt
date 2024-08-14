@@ -38,8 +38,8 @@ import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.common.ListRitmo
+import com.selincengiz.ritmo.presentation.common.handlePagingResult
 import com.selincengiz.ritmo.presentation.search.components.CustomSearchBar
-import com.selincengiz.ritmo.presentation.common.handlePagingResultTrack
 import com.selincengiz.ritmo.presentation.search.components.SingleSelectionCheckbox
 import com.selincengiz.ritmo.ui.theme.BlueButtonColor
 
@@ -122,8 +122,8 @@ fun SearchScreen(
         } else {
             state.ritmo?.let {
                 val handlePagingResult =
-                    handlePagingResultTrack(
-                        tracks = it.collectAsLazyPagingItems(),
+                    handlePagingResult(
+                        items = it.collectAsLazyPagingItems(),
                         title = "search"
                     )
                 if (handlePagingResult) {
