@@ -31,7 +31,7 @@ Enjoy a sleek and intuitive interface that makes finding and playing your music 
 </p>
 ## 📽 Video 
 
-- https://github.com/selincengiz41/econobazaar/assets/60012262/376fc59f-34cb-4020-85bc-c725992079b8
+- https://drive.google.com/file/d/1qf1_97nV-H-GhECFLQAtPMM6bOdydpjn/view?usp=sharing
 
 <br>
 
