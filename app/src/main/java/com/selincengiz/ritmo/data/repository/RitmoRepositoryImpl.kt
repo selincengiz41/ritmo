@@ -51,6 +51,18 @@ class RitmoRepositoryImpl(
         return api.getTrack(id).toTrackUI()
     }
 
+    override suspend fun getArtist(id: String): Flow<PagingData<TrackUI>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = {
+                SearchPagingSource(
+                    ritmoApi = api,
+                    id = id
+                )
+            }
+        ).flow
+    }
+
     override suspend fun insertTrack(track: TrackUI) {
         dao.insert(track.toTrackEntity())
     }

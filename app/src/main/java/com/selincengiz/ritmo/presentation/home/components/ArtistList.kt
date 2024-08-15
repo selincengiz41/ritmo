@@ -14,7 +14,11 @@ import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding2
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 
 @Composable
-fun ArtistList(modifier: Modifier = Modifier, artist: LazyPagingItems<ArtistUI>) {
+fun ArtistList(
+    modifier: Modifier = Modifier,
+    artist: LazyPagingItems<ArtistUI>,
+    navigateToArtist: (ArtistUI) -> Unit = ({})
+) {
     LazyRow(
         modifier = modifier
             .fillMaxWidth()
@@ -24,7 +28,7 @@ fun ArtistList(modifier: Modifier = Modifier, artist: LazyPagingItems<ArtistUI>)
     ) {
         items(count = artist.itemCount) {
             artist[it]?.let { artist ->
-                ArtistCard(artistUI = artist)
+                ArtistCard(artistUI = artist, onClick = { navigateToArtist(artist) })
             }
         }
     }

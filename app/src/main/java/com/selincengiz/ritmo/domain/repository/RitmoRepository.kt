@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface RitmoRepository {
-     fun search(
+    fun search(
         q: String,
-    ):  Flow<PagingData<TrackUI>>
+    ): Flow<PagingData<TrackUI>>
 
     suspend fun getAlbum(
         id: String,
@@ -19,6 +19,10 @@ interface RitmoRepository {
     suspend fun getTrack(
         id: String,
     ): TrackUI
+
+    suspend fun getArtist(
+        id: String,
+    ): Flow<PagingData<TrackUI>>
 
     suspend fun insertTrack(track: TrackUI)
 

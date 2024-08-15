@@ -9,5 +9,6 @@ object Constants {
     const val SEARCH = "search"
     const val TRACK = "track/{id}"
     const val ALBUM = "album/{id}"
+    const val ARTIST = "artist/{id}/top"
 
 }

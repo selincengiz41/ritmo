@@ -55,7 +55,7 @@ fun Release(
         AsyncImage(
             modifier = Modifier
                 .clip(RoundedCornerShape(6.dp))
-                .size(height = 144.dp, width = 136.dp),
+                .size(height = 150.dp, width = 136.dp),
             model = ImageRequest.Builder(context).data(track?.album?.coverMedium).build(),
             placeholder = painterResource(id = R.drawable.placeholder),
             contentDescription = null,
@@ -83,7 +83,7 @@ fun Release(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

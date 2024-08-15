@@ -9,6 +9,7 @@ sealed class Route(
     data object RitmoNavigatorScreen : Route(route = "ritmoNavigatorScreen")
     data object HomeScreen : Route(route = "homeScreen")
     data object DetailScreen : Route(route = "detailScreen")
+    data object ArtistScreen : Route(route = "artistScreen")
     data object SearchScreen : Route(route = "searchScreen")
     data object FavoriteScreen : Route(route = "favoriteScreen")
     data object LoginScreen : Route(route = "loginScreen")

@@ -24,6 +24,7 @@ fun handlePagingResult(
                 "search" -> TrackShimmerEffect()
                 "artist" -> ArtistCardShimmerEffect()
                 "album" -> AlbumCardShimmerEffect()
+                "artistTrack" -> TrackShimmerEffect()
                 else -> {}
             }
             false

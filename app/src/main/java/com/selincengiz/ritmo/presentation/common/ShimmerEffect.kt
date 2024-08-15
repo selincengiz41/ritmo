@@ -52,7 +52,6 @@ fun Modifier.shimmerEffect(cornerRadius: CornerRadius = CornerRadius(x = 12f, y 
     }
 }
 
-
 @Composable
 fun AlbumCardShimmerEffect(
 ) {
@@ -175,7 +174,6 @@ fun TrackShimmerEffect() {
                             .fillMaxWidth(0.5f)
                             .height(10.dp)
                             .shimmerEffect()
-
                     )
                 }
             }

@@ -36,29 +36,29 @@ class MainActivity : ComponentActivity() {
                 viewModel.splashCondition
             }
         }
-            setContent {
-                RitmoTheme {
-                    val isSystemInDarkMode = isSystemInDarkTheme()
-                    val systemController = rememberSystemUiController()
-                    SideEffect {
-                        systemController.setSystemBarsColor(
-                            color = Color.Transparent,
-                            darkIcons = !isSystemInDarkMode
-                        )
-                            systemController.setNavigationBarColor(
-                                color = Color.Black
-                            )
-                    }
-                    Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background))
-                    {
-                        val context = LocalContext.current
-                        val startDesination = viewModel.startDestination
-                        NavGraph(startDestination = startDesination, mainEvent = viewModel::onEvent)
-                        val serviceIntent = Intent(context, MediaDownloadService::class.java)
-                        MediaDownloadService.startService(context, serviceIntent)
-                    }
+        setContent {
+            RitmoTheme {
+                val isSystemInDarkMode = isSystemInDarkTheme()
+                val systemController = rememberSystemUiController()
+                SideEffect {
+                    systemController.setSystemBarsColor(
+                        color = Color.Transparent,
+                        darkIcons = !isSystemInDarkMode
+                    )
+                    systemController.setNavigationBarColor(
+                        color = Color.Black
+                    )
+                }
+                Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background))
+                {
+                    val context = LocalContext.current
+                    val startDesination = viewModel.startDestination
+                    NavGraph(startDestination = startDesination, mainEvent = viewModel::onEvent)
+                    val serviceIntent = Intent(context, MediaDownloadService::class.java)
+                    MediaDownloadService.startService(context, serviceIntent)
                 }
             }
+        }
     }
 }
 

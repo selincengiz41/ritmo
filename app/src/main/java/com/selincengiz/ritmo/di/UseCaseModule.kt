@@ -6,6 +6,7 @@ import com.selincengiz.ritmo.domain.usecase.app_entry.AppEntryUseCase
 import com.selincengiz.ritmo.domain.usecase.app_entry.ReadAppEntry
 import com.selincengiz.ritmo.domain.usecase.app_entry.SaveAppEntry
 import com.selincengiz.ritmo.domain.usecase.ritmo.GetAlbum
+import com.selincengiz.ritmo.domain.usecase.ritmo.GetArtist
 import com.selincengiz.ritmo.domain.usecase.ritmo.GetTrack
 import com.selincengiz.ritmo.domain.usecase.ritmo.RitmoUseCase
 import com.selincengiz.ritmo.domain.usecase.ritmo.Search
@@ -49,7 +50,8 @@ object UseCaseModule {
     ) = RitmoUseCase(
         getAlbum = GetAlbum(ritmoRepository),
         getTrack = GetTrack(ritmoRepository),
-        search = Search(ritmoRepository)
+        search = Search(ritmoRepository),
+        getArtist = GetArtist(ritmoRepository)
     )
 
     @Provides

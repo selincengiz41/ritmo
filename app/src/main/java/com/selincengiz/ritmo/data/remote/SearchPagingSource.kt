@@ -7,7 +7,8 @@ import com.selincengiz.ritmo.domain.model.TrackUI
 
 class SearchPagingSource(
     private val ritmoApi: RitmoApi,
-    private val searchQuery: String
+    private val searchQuery: String = "",
+    private val id: String = ""
 ) : PagingSource<Int, TrackUI>() {
     private var totalTracksCount = 0
 
@@ -21,8 +22,12 @@ class SearchPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TrackUI> {
         val page = params.key ?: 1
         return try {
-            val tracksResponse =
+            val tracksResponse = if (searchQuery.isEmpty()) {
+                ritmoApi.getArtist(id = id, index = page, limit = params.loadSize)
+            } else {
                 ritmoApi.search(q = searchQuery, index = page, limit = params.loadSize)
+            }
+
             totalTracksCount += tracksResponse.data?.size ?: 0
             val tracks = tracksResponse.data!!.map { it!!.toTrackUI() }
 

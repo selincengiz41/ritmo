@@ -1,5 +1,6 @@
 package com.selincengiz.ritmo.presentation.home.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -28,9 +29,9 @@ import com.selincengiz.ritmo.presentation.Dimens.ExtraSmallPadding
 import com.selincengiz.ritmo.presentation.Dimens.MaxText
 
 @Composable
-fun ArtistCard(modifier: Modifier = Modifier, artistUI: ArtistUI) {
+fun ArtistCard(modifier: Modifier = Modifier, artistUI: ArtistUI, onClick: () -> Unit) {
     val context = LocalContext.current
-    Column(modifier = modifier) {
+    Column(modifier = modifier.clickable { onClick() }) {
 
         AsyncImage(
             modifier = Modifier
@@ -65,5 +66,7 @@ fun ArtistCard(modifier: Modifier = Modifier, artistUI: ArtistUI) {
 @Preview
 @Composable
 private fun ArtistPrev() {
-    ArtistCard(artistUI = ArtistUI(null, "Ayliva", null, null, null, null, null, null, null))
+    ArtistCard(artistUI = ArtistUI(null, "Ayliva", null, null, null, null, null, null, null)) {
+
+    }
 }

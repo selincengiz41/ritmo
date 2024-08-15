@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.selincengiz.ritmo.domain.model.ArtistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
 import com.selincengiz.ritmo.presentation.Dimens.MediumPadding1
 import com.selincengiz.ritmo.presentation.Dimens.SmallPadding
@@ -28,7 +29,8 @@ fun HomeScreen(
     state: HomeState,
     event: (HomeEvent) -> Unit,
     navigateToDetail: (String) -> Unit,
-    navigateToPlayer: (List<TrackUI?>, Int) -> Unit
+    navigateToPlayer: (List<TrackUI?>, Int) -> Unit,
+    navigateToArtist: (ArtistUI) -> Unit
 ) {
 
 
@@ -109,7 +111,9 @@ fun HomeScreen(
                     val handlePagingResult =
                         handlePagingResult(items = it.collectAsLazyPagingItems(), title = "artist")
                     if (handlePagingResult) {
-                        ArtistList(artist = it.collectAsLazyPagingItems())
+                        ArtistList(
+                            artist = it.collectAsLazyPagingItems(),
+                            navigateToArtist = { artist -> navigateToArtist(artist) })
                     }
                 }
             }

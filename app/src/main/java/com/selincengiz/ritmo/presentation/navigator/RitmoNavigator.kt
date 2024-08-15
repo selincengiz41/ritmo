@@ -21,7 +21,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.selincengiz.ritmo.R
+import com.selincengiz.ritmo.domain.model.ArtistUI
 import com.selincengiz.ritmo.domain.model.TrackUI
+import com.selincengiz.ritmo.presentation.artist.ArtistEvent
+import com.selincengiz.ritmo.presentation.artist.ArtistScreen
+import com.selincengiz.ritmo.presentation.artist.ArtistViewModel
 import com.selincengiz.ritmo.presentation.detail.DetailScreen
 import com.selincengiz.ritmo.presentation.detail.DetailViewModel
 import com.selincengiz.ritmo.presentation.detail.DetailsEvent
@@ -138,10 +142,16 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                             index = index,
                             route = Route.SongScreen.route
                         )
+                    },
+                    navigateToArtist = { artistUI ->
+                        navigateToArtist(
+                            navController = navController,
+                            artistUI = artistUI,
+                            route = Route.ArtistScreen.route
+                        )
                     }
                 )
             }
-
 
             composable(route = Route.SearchScreen.route) {
                 val viewModel: SearchViewModel = hiltViewModel()
@@ -164,7 +174,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 val viewModel: DetailViewModel = hiltViewModel()
                 navController.previousBackStackEntry?.savedStateHandle?.get<String?>("id")
                     ?.let { id ->
-                        if(ConnectivityHelper.isOnline(LocalContext.current)){
+                        if (ConnectivityHelper.isOnline(LocalContext.current)) {
                             viewModel.onEvent(DetailsEvent.GetPlaylist(id))
                             viewModel.onEvent(DetailsEvent.GetAlbum(id))
                         }
@@ -195,6 +205,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                     state = viewModel.state.value,
                     event = viewModel::onEvent,
                     navigateUp = {
+                        //TODO:bug ALerttt
                         val wasNavigatedFromDownloads =
                             navController.previousBackStackEntry?.savedStateHandle?.contains("track")
                                 ?: false
@@ -240,6 +251,28 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                     }
                 )
             }
+
+            composable(route = Route.ArtistScreen.route) {
+                val viewModel: ArtistViewModel = hiltViewModel()
+                val artist =
+                    navController.previousBackStackEntry?.savedStateHandle?.get<ArtistUI>("artist")
+                LaunchedEffect(artist) {
+                    artist?.let {
+                        viewModel.onEvent(ArtistEvent.GetArtist(artist))
+                    }
+                }
+                ArtistScreen(
+                    state = viewModel.state.value,
+                    navigateToPlayer = { trackList, index ->
+                        navigateToPlayer(
+                            navController = navController,
+                            trackList = trackList,
+                            index = index,
+                            route = Route.SongScreen.route
+                        )
+                    }
+                )
+            }
         }
     }
 }
@@ -270,5 +303,14 @@ private fun navigateToPlayer(
 ) {
     navController.currentBackStackEntry?.savedStateHandle?.set("track", trackList)
     navController.currentBackStackEntry?.savedStateHandle?.set("index", index)
+    navController.navigate(route = route)
+}
+
+private fun navigateToArtist(
+    navController: NavController,
+    artistUI: ArtistUI,
+    route: String
+) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("artist", artistUI)
     navController.navigate(route = route)
 }

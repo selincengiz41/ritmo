@@ -4,6 +4,7 @@ import com.selincengiz.ritmo.data.remote.dto.AlbumResponse
 import com.selincengiz.ritmo.data.remote.dto.SearchResponse
 import com.selincengiz.ritmo.data.remote.dto.TrackDto
 import com.selincengiz.ritmo.util.Constants.ALBUM
+import com.selincengiz.ritmo.util.Constants.ARTIST
 import com.selincengiz.ritmo.util.Constants.SEARCH
 import com.selincengiz.ritmo.util.Constants.TRACK
 import retrofit2.http.GET
@@ -28,4 +29,11 @@ interface RitmoApi {
     suspend fun getTrack(
         @Path("id") id: String,
     ): TrackDto
+
+    @GET(ARTIST)
+    suspend fun getArtist(
+        @Path("id") id: String,
+        @Query("index") index: Int,
+        @Query("limit") limit: Int
+    ): SearchResponse
 }
