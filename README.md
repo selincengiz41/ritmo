@@ -20,6 +20,7 @@ Enjoy a sleek and intuitive interface that makes finding and playing your music 
   <img src="https://github.com/user-attachments/assets/41d108ac-4b7c-44ae-94fe-abc4e0b54579" width="130" height="300"/>
   <img src="https://github.com/user-attachments/assets/057b7e57-ba9f-46ff-a700-ad8b4ba0cb22" width="130" height="300"/> 
   <img src="https://github.com/user-attachments/assets/9347666b-bf51-4fa4-9385-5211527b4b31" width="130" height="300"/>
+  <img src="https://github.com/user-attachments/assets/302b4f19-92af-4fd1-827e-d7aee96c9f14" width="130" height="300"/>
   <img src="https://github.com/user-attachments/assets/637385e4-7862-4143-9602-567a7f2a951d" width="130" height="300"/> 
   <img src="https://github.com/user-attachments/assets/3b2f0023-a0db-4288-9f44-ac144a317808" width="130" height="300"/>
   <img src="https://github.com/user-attachments/assets/1caff94d-f558-4768-ab2e-42ebe1d150a0" width="130" height="300"/>
