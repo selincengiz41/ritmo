@@ -64,8 +64,7 @@ import com.selincengiz.ritmo.presentation.player.PlayerState
 fun PlayerScreen(
     modifier: Modifier = Modifier,
     state: PlayerState,
-    event: (PlayerEvent) -> Unit,
-    navigateUp: () -> Unit
+    event: (PlayerEvent) -> Unit
 ) {
     val context = LocalContext.current
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -83,13 +82,6 @@ fun PlayerScreen(
                 .padding(top = 20.dp, end = 20.dp),
             horizontalArrangement = Arrangement.End
         ) {
-            Icon(
-                modifier = Modifier.clickable { navigateUp() },
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "back",
-                tint = Color.White
-            )
-            Spacer(modifier = Modifier.width(35.dp))
             Icon(
                 modifier = Modifier.clickable {
                     Intent(Intent.ACTION_SEND).also {

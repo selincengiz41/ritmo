@@ -85,7 +85,6 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             if (isBottomBarVisible) {
-
                 BottomNavigation(
                     items = bottomNavigationItems,
                     selected = selectedItem,
@@ -203,20 +202,7 @@ fun RitmoNavigator(navigateToLogin: () -> Unit) {
                 }
                 SongScreen(
                     state = viewModel.state.value,
-                    event = viewModel::onEvent,
-                    navigateUp = {
-                        //TODO:bug ALerttt
-                        val wasNavigatedFromDownloads =
-                            navController.previousBackStackEntry?.savedStateHandle?.contains("track")
-                                ?: false
-                        if (wasNavigatedFromDownloads) {
-                            navController.navigate(Route.FavoriteScreen.route) {
-                                popUpTo(Route.SongScreen.route) {
-                                    inclusive = true
-                                }
-                            }
-                        }
-                    }
+                    event = viewModel::onEvent
                 )
             }
 

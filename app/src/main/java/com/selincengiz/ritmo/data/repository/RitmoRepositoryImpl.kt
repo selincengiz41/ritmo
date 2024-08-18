@@ -71,7 +71,6 @@ class RitmoRepositoryImpl(
         dao.delete(track.toTrackEntity())
     }
 
-
     override fun getTracksLocal(): Flow<List<TrackUI>> {
         return dao.getTracks().map { it -> it.map { it.toTrackUI() } }
     }

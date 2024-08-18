@@ -23,8 +23,7 @@ import com.selincengiz.ritmo.presentation.player.components.PlaylistScreen
 fun SongScreen(
     modifier: Modifier = Modifier,
     state: PlayerState,
-    event: (PlayerEvent) -> Unit,
-    navigateUp: () -> Unit
+    event: (PlayerEvent) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = 0) {
@@ -35,8 +34,7 @@ fun SongScreen(
                 0 -> PlayerScreen(
                     modifier = Modifier,
                     state = state,
-                    event = event,
-                    navigateUp
+                    event = event
                 )
                 1 -> PlaylistScreen(
                     modifier = Modifier,
